@@ -114,13 +114,13 @@ $$\text{Global Catalog } (N \approx 100,000) \xrightarrow{\text{Retrieval}} \tex
    - **Skill Match Retrieval**: Exact/fuzzy matching against hard requirements and preferred skills.
    - **Graph Traversal**: Expanding candidate pool via related taxonomy nodes and peer transition paths.
 2. **Feature Engineering**:
-   - $\text{Score}_{\text{semantic}}$: Cosine similarity between candidate and job embeddings.
+   - $S_{\text{semantic}}$: Cosine similarity between candidate and job embeddings.
    - $R_{\text{req}}$: Required skill match ratio ($\frac{|S_{\text{user}} \cap S_{\text{req}}|}{|S_{\text{req}}|}$).
    - $R_{\text{pref}}$: Preferred skill match ratio ($\frac{|S_{\text{user}} \cap S_{\text{pref}}|}{|S_{\text{pref}}|}$).
-   - $\Delta \text{exp}$: Experience delta score ($\max(0, \text{Job}_{\text{min\_exp}} - \text{User}_{\text{exp}})$).
-   - $\text{Match}_{\text{work\_mode}}$: Remote / Hybrid / On-site alignment indicator.
-   - $\text{Freshness}$: Exponential decay $e^{-\lambda \cdot (t_{\text{now}} - t_{\text{posted}})}$.
-   - $\text{User}_{\text{affinity}}$: Historical CTR and interaction frequency per company and job family.
+   - $\Delta E_{\text{exp}}$: Experience delta score ($\max(0, E_{\text{req}} - E_{\text{user}})$).
+   - $M_{\text{mode}}$: Remote / Hybrid / On-site alignment indicator ($\mathbb{I}(\text{mode} \in P_{\text{user}})$).
+   - $F_{\text{freshness}}$: Exponential decay ($\exp(-\lambda \cdot \Delta t)$).
+   - $A_{\text{affinity}}$: Historical CTR and interaction frequency per company and job family.
 3. **Learning-to-Rank (LightGBM)**:
    - Evaluates candidate vectors with a LambdaMART objective trained on pairwise relevance gains, optimizing **NDCG@10**.
 4. **Multi-Objective Re-Ranking (Maximal Marginal Relevance - MMR)**:
@@ -131,9 +131,9 @@ $$\text{Global Catalog } (N \approx 100,000) \xrightarrow{\text{Retrieval}} \tex
 - **Counterfactual Market Analysis**: Enables candidates to simulate adding hypothetical skills or certifications (e.g., *\"What if I learn Kubernetes and Go?\"*).
 - **Zero-Hallucination Re-indexing**: Re-evaluates retrieval and ranking against the indexed database in real time.
 - **Computed Value Metrics**:
-  - $\Delta \text{Opportunities}$: Absolute increase in qualified positions ($N_{\text{sim}} - N_{\text{current}}$).
-  - $\Delta \text{Unlocked Roles}$: New job categories where match score $> 75\%$.
-  - $\Delta \text{Compensation}$: Median market salary trajectory comparison.
+  - $\Delta N_{\text{opportunities}}$: Absolute increase in qualified positions ($N_{\text{sim}} - N_{\text{current}}$).
+  - $\Delta R_{\text{roles}}$: New job categories where match score $> 75\%$.
+  - $\Delta S_{\text{salary}}$: Median market salary trajectory comparison.
 
 ### 5. 🤖 AI Career Agent (Deterministic Tool-Calling Orchestrator)
 The AI Agent is designed around deterministic microservice execution. The LLM processes user natural language and orchestrates tools rather than fabricating data.
