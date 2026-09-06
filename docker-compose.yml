@@ -1,0 +1,57 @@
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: anvesh_postgres
+    environment:
+      POSTGRES_USER: anvesh_user
+      POSTGRES_PASSWORD: anvesh_secure_password
+      POSTGRES_DB: anvesh_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U anvesh_user -d anvesh_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: anvesh_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: anvesh_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: anvesh_mlflow
+    ports:
+      - "5000:5000"
+    command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./mlruns --host 0.0.0.0 --port 5000
+    volumes:
+      - mlflow_data:/mlruns
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  qdrant_storage:
+  redis_data:
+  mlflow_data:
