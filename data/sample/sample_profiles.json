@@ -1,0 +1,13 @@
+﻿[
+  {
+    "id": "prof_user_001",
+    "full_name": "Goutam Anvesh",
+    "headline": "Machine Learning Engineer & Backend Developer",
+    "years_of_experience": 4.0,
+    "current_role": "Machine Learning Engineer",
+    "location": "Bengaluru, India",
+    "preferred_work_mode": "REMOTE",
+    "skills": ["Python", "PyTorch", "FastAPI", "Docker", "PostgreSQL", "LightGBM"],
+    "target_roles": ["AI Engineer", "MLOps Engineer", "Senior ML Engineer"]
+  }
+]

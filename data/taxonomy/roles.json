@@ -1,0 +1,41 @@
+﻿{
+  "version": "1.0.0",
+  "roles": [
+    {
+      "id": "role_ai_eng_01",
+      "title": "AI Engineer",
+      "family": "Artificial Intelligence",
+      "description": "Designs, implements, and serves neural networks, LLM agents, and deep learning pipelines in production.",
+      "core_skills": ["skill_py_01", "skill_pytorch_01", "skill_transformers_01", "skill_qdrant_01", "skill_fastapi_01"],
+      "adjacent_roles": ["role_ml_eng_01", "role_mlops_01", "role_nlp_eng_01"],
+      "market_demand_level": "VERY_HIGH"
+    },
+    {
+      "id": "role_ml_eng_01",
+      "title": "Machine Learning Engineer",
+      "family": "Artificial Intelligence",
+      "description": "Develops tabular, recommendation, and deep learning models with scalable feature engineering and ranking pipelines.",
+      "core_skills": ["skill_py_01", "skill_pytorch_01", "skill_lightgbm_01", "skill_docker_01"],
+      "adjacent_roles": ["role_ai_eng_01", "role_mlops_01", "role_data_scientist_01"],
+      "market_demand_level": "HIGH"
+    },
+    {
+      "id": "role_mlops_01",
+      "title": "MLOps Engineer",
+      "family": "Infrastructure & ML",
+      "description": "Automates the CI/CD, deployment, container orchestration, monitoring, and scaling of machine learning systems.",
+      "core_skills": ["skill_py_01", "skill_docker_01", "skill_k8s_01", "skill_cloud_aws_01", "skill_fastapi_01"],
+      "adjacent_roles": ["role_ml_eng_01", "role_devops_01", "role_cloud_architect_01"],
+      "market_demand_level": "VERY_HIGH"
+    },
+    {
+      "id": "role_backend_eng_01",
+      "title": "Senior Backend Engineer",
+      "family": "Software Engineering",
+      "description": "Architects resilient, high-throughput microservices, API gateways, database schemas, and distributed caches.",
+      "core_skills": ["skill_py_01", "skill_fastapi_01", "skill_docker_01", "skill_cloud_aws_01"],
+      "adjacent_roles": ["role_mlops_01", "role_ai_eng_01", "role_fullstack_01"],
+      "market_demand_level": "HIGH"
+    }
+  ]
+}

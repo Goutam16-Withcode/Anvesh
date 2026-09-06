@@ -1,0 +1,82 @@
+﻿{
+  "version": "1.0.0",
+  "skills": [
+    {
+      "id": "skill_py_01",
+      "name": "Python",
+      "category": "Programming Languages",
+      "aliases": ["python3", "py", "cpython"],
+      "related_skills": ["skill_pytorch_01", "skill_fastapi_01", "skill_pandas_01"]
+    },
+    {
+      "id": "skill_pytorch_01",
+      "name": "PyTorch",
+      "category": "Machine Learning & AI",
+      "aliases": ["torch", "pytorch-lightning"],
+      "related_skills": ["skill_py_01", "skill_cuda_01", "skill_transformers_01"]
+    },
+    {
+      "id": "skill_transformers_01",
+      "name": "Transformers",
+      "category": "Machine Learning & AI",
+      "aliases": ["huggingface", "bert", "gpt", "llm"],
+      "related_skills": ["skill_pytorch_01", "skill_nlp_01"]
+    },
+    {
+      "id": "skill_fastapi_01",
+      "name": "FastAPI",
+      "category": "Backend Frameworks",
+      "aliases": ["fast-api", "starlette", "pydantic"],
+      "related_skills": ["skill_py_01", "skill_asyncpg_01", "skill_docker_01"]
+    },
+    {
+      "id": "skill_docker_01",
+      "name": "Docker",
+      "category": "DevOps & Cloud",
+      "aliases": ["containerization", "docker-compose"],
+      "related_skills": ["skill_k8s_01", "skill_linux_01"]
+    },
+    {
+      "id": "skill_k8s_01",
+      "name": "Kubernetes",
+      "category": "DevOps & Cloud",
+      "aliases": ["k8s", "kubectl", "helm"],
+      "related_skills": ["skill_docker_01", "skill_cloud_aws_01"]
+    },
+    {
+      "id": "skill_cloud_aws_01",
+      "name": "AWS",
+      "category": "Cloud Computing",
+      "aliases": ["amazon web services", "ec2", "s3", "ecs", "eks"],
+      "related_skills": ["skill_k8s_01", "skill_docker_01", "skill_terraform_01"]
+    },
+    {
+      "id": "skill_qdrant_01",
+      "name": "Vector Databases",
+      "category": "Databases & Storage",
+      "aliases": ["qdrant", "pinecone", "milvus", "weaviate", "pgvector"],
+      "related_skills": ["skill_py_01", "skill_transformers_01"]
+    },
+    {
+      "id": "skill_lightgbm_01",
+      "name": "LightGBM",
+      "category": "Machine Learning & AI",
+      "aliases": ["lgb", "lambdamart", "gradient boosting"],
+      "related_skills": ["skill_py_01", "skill_scikit_01"]
+    },
+    {
+      "id": "skill_react_01",
+      "name": "React",
+      "category": "Frontend Frameworks",
+      "aliases": ["reactjs", "react.js", "nextjs", "next.js"],
+      "related_skills": ["skill_ts_01", "skill_js_01", "skill_tailwind_01"]
+    },
+    {
+      "id": "skill_ts_01",
+      "name": "TypeScript",
+      "category": "Programming Languages",
+      "aliases": ["ts"],
+      "related_skills": ["skill_react_01", "skill_node_01"]
+    }
+  ]
+}

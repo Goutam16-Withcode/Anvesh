@@ -1,0 +1,32 @@
+﻿[
+  {
+    "id": "job_sample_001",
+    "title": "AI Platform Engineer",
+    "company": "NVIDIA",
+    "location": "Santa Clara, CA",
+    "work_mode": "REMOTE",
+    "min_experience_years": 3,
+    "max_experience_years": 7,
+    "min_salary": 170000,
+    "max_salary": 230000,
+    "currency": "USD",
+    "required_skills": ["Python", "PyTorch", "FastAPI", "Vector Databases"],
+    "preferred_skills": ["Kubernetes", "CUDA", "Transformers"],
+    "description": "Join our AI Infrastructure team to design scalable vector retrieval pipelines and high-throughput inference microservices."
+  },
+  {
+    "id": "job_sample_002",
+    "title": "MLOps Systems Engineer",
+    "company": "Stripe",
+    "location": "San Francisco, CA",
+    "work_mode": "REMOTE",
+    "min_experience_years": 4,
+    "max_experience_years": 8,
+    "min_salary": 180000,
+    "max_salary": 245000,
+    "currency": "USD",
+    "required_skills": ["Python", "Docker", "Kubernetes", "AWS"],
+    "preferred_skills": ["MLflow", "FastAPI", "Terraform"],
+    "description": "Scale real-time machine learning infrastructure, model serving engines, and continuous model evaluation pipelines."
+  }
+]
