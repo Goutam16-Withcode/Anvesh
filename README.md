@@ -1,4 +1,4 @@
-﻿# 🚀 ANVESH (अन्वेष)
+# 🚀 ANVESH (अन्वेष)
 ### AI-Powered Global Career Discovery & Multi-Stage Recommendation Platform
 
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
@@ -143,15 +143,15 @@ sequenceDiagram
     autonumber
     actor User as Candidate
     participant Agent as AI Agent (LangChain)
-    participant Tools as Deterministic Service Layer
-    participant Store as PostgreSQL & Qdrant
+    participant Tools as Service Layer
+    participant Store as PostgreSQL and Qdrant
 
     User->>Agent: "What roles fit me if I transition from Backend to AI Engineering?"
     Agent->>Tools: calculate_skill_gap(user_id, target_role="AI Engineer")
     Tools->>Store: Query Skill Graph & Role Vectors
-    Store-->>Tools: Gap: ["PyTorch", "Transformers", "CUDA", "Vector DBs"]
+    Store-->>Tools: Gap: PyTorch, Transformers, CUDA, Vector DBs
     Tools-->>Agent: Returns structured skill gap matrix
-    Agent->>Tools: simulate_skill(user_id, added_skills=["PyTorch", "Transformers"])
+    Agent->>Tools: simulate_skill(user_id, added_skills="PyTorch, Transformers")
     Tools->>Store: Re-evaluate Candidate Generation
     Store-->>Tools: 142 new matching vacancies (+65% salary band)
     Tools-->>Agent: Simulation delta metrics
