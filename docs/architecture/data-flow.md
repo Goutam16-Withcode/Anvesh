@@ -1,4 +1,4 @@
-﻿# 🔄 ANVESH: Data Lifecycle & Ingestion Flow Specification
+# 🔄 ANVESH: Data Lifecycle & Ingestion Flow Specification
 
 ## 1. End-to-End Data Lifecycle Overview
 
@@ -67,8 +67,8 @@ flowchart LR
     IncomingJob["Incoming Job Posting"] --> Shingling["3-Gram Shingling on Text"]
     Shingling --> MinHash["128 MinHash Signatures"]
     MinHash --> LSHIndex{"LSH Bucket Lookup"}
-    LSHIndex -->|Match Found (Jaccard > 0.88)| MergeRecord["Merge Postings & Update Source Links"]
-    LSHIndex -->|No Match| InsertNew["Insert New Canonical Job Record"]
+    LSHIndex -->|"Match Found (Jaccard > 0.88)"| MergeRecord["Merge Postings & Update Source Links"]
+    LSHIndex -->|"No Match"| InsertNew["Insert New Canonical Job Record"]
     MergeRecord --> PG[("PostgreSQL")]
     InsertNew --> PG & QDR[("Qdrant")]
 ```

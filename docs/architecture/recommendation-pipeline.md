@@ -1,4 +1,4 @@
-﻿# 🎯 ANVESH: Recommendation & Ranking Pipeline Specification
+# 🎯 ANVESH: Recommendation & Ranking Pipeline Specification
 
 ## 1. Problem Formulation
 
@@ -39,7 +39,7 @@ Candidate generation pulls from three complementary channels to prevent false ne
 
 ```mermaid
 flowchart TD
-    UserReq["Candidate State (Profile Vector $\mathbf{u}$, Skills $S_u$, Preferences $P_u$)"]
+    UserReq["Candidate State (Profile Vector u, Skills S_u, Preferences P_u)"]
 
     subgraph Channels ["Retrieval Channels"]
         C1["Channel A: Dense Vector Retrieval<br/>Qdrant HNSW Cosine Search<br/>Top 250 Candidates"]

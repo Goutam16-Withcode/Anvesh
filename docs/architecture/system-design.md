@@ -1,4 +1,4 @@
-﻿# 🏗️ ANVESH: System Design & Architecture Specification
+# 🏗️ ANVESH: System Design & Architecture Specification
 
 ## 1. Executive Summary
 
@@ -185,15 +185,15 @@ The What-If engine answers real-world candidate queries: *"If I invest 3 months 
 
 ```mermaid
 flowchart TD
-    CurrentState["Current User Profile $P_0$"] --> BaselineEval["Baseline Retrieval & Ranking"]
-    BaselineEval --> BaseMetrics["Baseline Metrics:<br/>$N_0 = 142$ Jobs<br/>Median Salary = $125k"]
+    CurrentState["Current User Profile (P0)"] --> BaselineEval["Baseline Retrieval & Ranking"]
+    BaselineEval --> BaseMetrics["Baseline Metrics:<br/>N0 = 142 Jobs<br/>Median Salary = $125k"]
 
-    SimInput["Simulated Skills Addition:<br/>+ [Kubernetes, Kafka]"] --> MutatedState["Mutated Profile $P_{\text{sim}}$"]
+    SimInput["Simulated Skills Addition:<br/>+ Kubernetes, Kafka"] --> MutatedState["Mutated Profile (P_sim)"]
     MutatedState --> SimEval["Simulated Retrieval & Ranking"]
-    SimEval --> SimMetrics["Simulated Metrics:<br/>$N_{\text{sim}} = 238$ Jobs<br/>Median Salary = $155k"]
+    SimEval --> SimMetrics["Simulated Metrics:<br/>N_sim = 238 Jobs<br/>Median Salary = $155k"]
 
     BaseMetrics & SimMetrics --> DeltaEngine["Deterministic Delta Engine"]
-    DeltaEngine --> Output["Output Delta Object:<br/>$\Delta$ Jobs: +96 (+67.6%)<br/>$\Delta$ Salary: +$30,000<br/>New Unlocked Roles: [ML Platform Engineer, Cloud Architect]"]
+    DeltaEngine --> Output["Output Delta Object:<br/>Delta Jobs: +96 (+67.6%)<br/>Delta Salary: +$30,000<br/>New Unlocked Roles: ML Platform Engineer, Cloud Architect"]
 ```
 
 ---
