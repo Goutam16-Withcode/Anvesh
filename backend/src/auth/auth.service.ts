@@ -1,0 +1,180 @@
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { GoogleAuthDto } from './dto/google-auth.dto';
+import { FirebaseAuthService } from './firebase-auth.service';
+
+export interface UserEntity {
+  id: string;
+  email: string;
+  passwordHash?: string;
+  fullName: string;
+  roleType: string;
+  photoUrl?: string;
+  provider: 'local' | 'google';
+  createdAt: string;
+}
+
+@Injectable()
+export class AuthService {
+  // In-memory backing store for demo/development with pre-seeded test accounts
+  private users: Map<string, UserEntity> = new Map();
+
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly firebaseAuthService: FirebaseAuthService,
+  ) {
+    // Seed an initial demo account
+    const demoPasswordHash = bcrypt.hashSync('CandidatePass123!', 10);
+    this.users.set('demo@anvesh.ai', {
+      id: 'usr_demo_001',
+      email: 'demo@anvesh.ai',
+      passwordHash: demoPasswordHash,
+      fullName: 'Goutam Anvesh',
+      roleType: 'candidate',
+      photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+      provider: 'local',
+      createdAt: new Date().toISOString(),
+    });
+  }
+
+  async register(dto: RegisterDto) {
+    const normalizedEmail = dto.email.toLowerCase().trim();
+    if (this.users.has(normalizedEmail)) {
+      throw new ConflictException('An account with this email address already exists.');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(dto.password, salt);
+
+    const newUser: UserEntity = {
+      id: 'usr_' + Math.random().toString(36).substring(2, 11),
+      email: normalizedEmail,
+      passwordHash,
+      fullName: dto.full_name,
+      roleType: dto.role_type || 'candidate',
+      provider: 'local',
+      createdAt: new Date().toISOString(),
+    };
+
+    this.users.set(normalizedEmail, newUser);
+
+    const token = this.generateToken(newUser);
+    return {
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        full_name: newUser.fullName,
+        role_type: newUser.roleType,
+        provider: newUser.provider,
+        created_at: newUser.createdAt,
+      },
+      access_token: token,
+      token_type: 'bearer',
+      expires_in: 86400,
+    };
+  }
+
+  async login(dto: LoginDto) {
+    const normalizedEmail = dto.email.toLowerCase().trim();
+    const user = this.users.get(normalizedEmail);
+
+    if (!user || !user.passwordHash) {
+      throw new UnauthorizedException('Invalid email or password credentials.');
+    }
+
+    const isMatch = await bcrypt.compare(dto.password, user.passwordHash);
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid email or password credentials.');
+    }
+
+    const token = this.generateToken(user);
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        full_name: user.fullName,
+        role_type: user.roleType,
+        photo_url: user.photoUrl,
+        provider: user.provider,
+        created_at: user.createdAt,
+      },
+      access_token: token,
+      token_type: 'bearer',
+      expires_in: 86400,
+    };
+  }
+
+  async googleAuth(dto: GoogleAuthDto) {
+    const decoded = await this.firebaseAuthService.verifyIdToken(dto.token, {
+      email: dto.email,
+      full_name: dto.full_name,
+      photo_url: dto.photo_url,
+    });
+
+    const normalizedEmail = decoded.email.toLowerCase().trim();
+    let user = this.users.get(normalizedEmail);
+
+    if (!user) {
+      user = {
+        id: 'usr_g_' + (decoded.uid || Math.random().toString(36).substring(2, 11)),
+        email: normalizedEmail,
+        fullName: decoded.name || dto.full_name || 'Google User',
+        roleType: 'candidate',
+        photoUrl: decoded.picture || dto.photo_url,
+        provider: 'google',
+        createdAt: new Date().toISOString(),
+      };
+      this.users.set(normalizedEmail, user);
+    } else {
+      if (decoded.picture) user.photoUrl = decoded.picture;
+      if (decoded.name) user.fullName = decoded.name;
+    }
+
+    const token = this.generateToken(user);
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        full_name: user.fullName,
+        role_type: user.roleType,
+        photo_url: user.photoUrl,
+        provider: user.provider,
+        created_at: user.createdAt,
+      },
+      access_token: token,
+      token_type: 'bearer',
+      expires_in: 86400,
+    };
+  }
+
+  async getUserById(id: string) {
+    for (const user of this.users.values()) {
+      if (user.id === id) {
+        return {
+          id: user.id,
+          email: user.email,
+          full_name: user.fullName,
+          role_type: user.roleType,
+          photo_url: user.photoUrl,
+          provider: user.provider,
+          created_at: user.createdAt,
+        };
+      }
+    }
+    return null;
+  }
+
+  private generateToken(user: UserEntity): string {
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      full_name: user.fullName,
+      role_type: user.roleType,
+      provider: user.provider,
+    };
+    return this.jwtService.sign(payload);
+  }
+}
