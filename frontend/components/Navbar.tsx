@@ -15,7 +15,7 @@ import {
   Search,
   Cpu,
   TrendingUp,
-  Bot,
+  Terminal,
   Route,
   ShieldCheck,
   Activity,
@@ -103,7 +103,7 @@ export function Navbar() {
                   title="Autonomous Career Agent"
                   description="Tool-orchestrated LangChain assistant with verified traces"
                   href="#advanced"
-                  icon={<Bot className="w-4 h-4 text-brand-600" />}
+                  icon={<Terminal className="w-4 h-4 text-brand-600" />}
                   badge="Tools"
                 />
                 <ProductItem

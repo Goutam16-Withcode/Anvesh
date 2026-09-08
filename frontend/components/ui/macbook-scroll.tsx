@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { 
@@ -27,10 +27,37 @@ import {
   SkipBack,
   Search,
   Mic,
-  Moon
+  Moon,
+  Volume1,
+  Terminal
 } from 'lucide-react';
 import { Badge } from './badge';
 import { useAuth } from '@/lib/auth-context';
+
+// Web Audio API mechanical key click synthesizer
+function playKeyClickSound(frequency = 580) {
+  try {
+    if (typeof window === 'undefined') return;
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(frequency + Math.random() * 80 - 40, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.035);
+
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.035);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.04);
+  } catch (_) {}
+}
 
 export const MacbookScroll = ({
   src,
@@ -46,6 +73,116 @@ export const MacbookScroll = ({
   children?: React.ReactNode;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Interactive Live Screen & Keyboard State
+  const [activeTab, setActiveTab] = useState<'discovery' | 'whatif' | 'vectors' | 'shap'>('discovery');
+  const [searchQuery, setSearchQuery] = useState<string>('Distributed AI Infrastructure');
+  const [activeKeys, setActiveKeys] = useState<Set<string>>(new Set());
+  const [capsLockActive, setCapsLockActive] = useState<boolean>(false);
+  const [isQueryRunning, setIsQueryRunning] = useState<boolean>(false);
+  const [simulatedSkills, setSimulatedSkills] = useState<string[]>(['CUDA', 'Kubernetes']);
+
+  const toggleSkill = (skill: string) => {
+    setSimulatedSkills((prev) =>
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+    );
+  };
+
+  const handleTriggerKey = useCallback((keyName: string) => {
+    playKeyClickSound();
+    
+    setActiveKeys((prev) => {
+      const next = new Set(prev);
+      next.add(keyName.toLowerCase());
+      return next;
+    });
+
+    if (keyName === '1') {
+      setActiveTab('discovery');
+    } else if (keyName === '2') {
+      setActiveTab('whatif');
+    } else if (keyName === '3') {
+      setActiveTab('vectors');
+    } else if (keyName === '4') {
+      setActiveTab('shap');
+    } else if (keyName === 'Backspace' || keyName === 'delete') {
+      setSearchQuery((prev) => prev.slice(0, -1));
+    } else if (keyName === 'Space' || keyName === ' ') {
+      setSearchQuery((prev) => (prev.length > 45 ? ' ' : prev + ' '));
+    } else if (keyName === 'Enter' || keyName === 'return') {
+      setIsQueryRunning(true);
+      setTimeout(() => setIsQueryRunning(false), 500);
+    } else if (keyName === 'CapsLock' || keyName === 'caps lock') {
+      setCapsLockActive((prev) => !prev);
+    } else if (keyName.length === 1) {
+      setSearchQuery((prev) => (prev.length > 45 ? keyName : prev + keyName));
+    }
+
+    setTimeout(() => {
+      setActiveKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(keyName.toLowerCase());
+        return next;
+      });
+    }, 180);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        return;
+      }
+
+      const k = e.key.toLowerCase();
+      if (e.key === 'CapsLock') {
+        setCapsLockActive((prev) => !prev);
+      }
+      playKeyClickSound();
+      
+      setActiveKeys((prev) => {
+        const next = new Set(prev);
+        next.add(k);
+        return next;
+      });
+
+      if (e.key === '1') {
+        setActiveTab('discovery');
+      } else if (e.key === '2') {
+        setActiveTab('whatif');
+      } else if (e.key === '3') {
+        setActiveTab('vectors');
+      } else if (e.key === '4') {
+        setActiveTab('shap');
+      } else if (e.key === 'Backspace') {
+        setSearchQuery((prev) => prev.slice(0, -1));
+      } else if (e.key === ' ') {
+        setSearchQuery((prev) => (prev.length > 45 ? ' ' : prev + ' '));
+      } else if (e.key === 'Enter') {
+        setIsQueryRunning(true);
+        setTimeout(() => setIsQueryRunning(false), 500);
+      } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        setSearchQuery((prev) => (prev.length > 45 ? e.key : prev + e.key));
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      setActiveKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(k);
+        return next;
+      });
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
 
   // Scroll tracking with smooth spring physics
   const { scrollYProgress } = useScroll({
@@ -61,7 +198,7 @@ export const MacbookScroll = ({
 
   // Smooth lid opening: from angled open (14deg) to upright (0deg)
   const rotateLid = useTransform(smoothProgress, [0.15, 0.5, 0.85], [14, 0, -3]);
-  const scale = useTransform(smoothProgress, [0.15, 0.5, 0.85], [0.94, 1, 0.96]);
+  const scale = useTransform(smoothProgress, [0.15, 0.5, 0.85], [0.93, 1, 0.96]);
 
   // Interactive mouse 3D parallax tilt
   const mouseX = useMotionValue(0);
@@ -84,6 +221,8 @@ export const MacbookScroll = ({
     mouseY.set(0);
   };
 
+  const isKeyActive = (keyId: string) => activeKeys.has(keyId.toLowerCase());
+
   return (
     <div
       ref={containerRef}
@@ -93,14 +232,14 @@ export const MacbookScroll = ({
       className="relative w-full py-8 sm:py-14 md:py-20 flex flex-col items-center justify-center overflow-visible select-none"
     >
       {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[500px] bg-gradient-to-tr from-brand-500/20 via-indigo-500/15 to-emerald-500/20 blur-[140px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[780px] h-[520px] bg-gradient-to-tr from-brand-500/20 via-indigo-500/15 to-emerald-500/20 blur-[140px] rounded-full pointer-events-none -z-10" />
 
       {/* Header Badge & Title */}
       <div className="text-center mb-8 sm:mb-12 space-y-3.5 max-w-3xl px-4 z-10">
         {badge || (
           <Badge variant="brand" className="font-bold px-3 py-1 text-xs">
             <Sparkles className="w-3.5 h-3.5 mr-1.5 text-brand-600 animate-pulse" />
-            <span>3D Interactive Architecture</span>
+            <span>Interactive 3D Hardware Architecture</span>
           </Badge>
         )}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.18]">
@@ -112,7 +251,7 @@ export const MacbookScroll = ({
           )}
         </h2>
         <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-          Interact directly with the ANVESH Discovery Console inside our 3D Apple MacBook environment.
+          Type on your physical keyboard or click the MacBook keys below to interact live with the screen.
         </p>
       </div>
 
@@ -125,7 +264,7 @@ export const MacbookScroll = ({
             scale: scale,
             transformStyle: 'preserve-3d',
           }}
-          className="w-full max-w-[880px] flex flex-col items-center shadow-[0_30px_90px_-20px_rgba(0,0,0,0.5)]"
+          className="w-full max-w-[880px] flex flex-col items-center shadow-[0_30px_90px_-20px_rgba(0,0,0,0.55)]"
         >
           {/* =========================================================================
               1. MACBOOK RETINA DISPLAY (LID)
@@ -144,25 +283,39 @@ export const MacbookScroll = ({
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-white/[0.05] pointer-events-none z-20 rounded-t-xl" />
 
             {/* Internal Retina Display Screen */}
-            <ScreenContent src={src}>{children}</ScreenContent>
+            <ScreenContent
+              src={src}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              searchQuery={searchQuery}
+              isQueryRunning={isQueryRunning}
+              simulatedSkills={simulatedSkills}
+              toggleSkill={toggleSkill}
+            >
+              {children}
+            </ScreenContent>
           </div>
 
           {/* =========================================================================
-              2. MACBOOK CHASSIS HINGE & SPACE GRAY KEYBOARD DECK
+              2. MACBOOK CHASSIS HINGE & INTERACTIVE KEYBOARD DECK
              ========================================================================= */}
-          <div className="relative w-full bg-gradient-to-b from-[#242732] via-[#1b1d26] to-[#121319] rounded-b-[22px] sm:rounded-b-[28px] border-x-[2px] sm:border-x-[2.5px] border-b-[3.5px] border-[#373d4d] shadow-[0_25px_60px_rgba(0,0,0,0.45)] flex flex-col items-center px-3 sm:px-6 py-2.5 sm:py-3.5 -mt-[1px] z-20">
+          <div className="relative w-full bg-gradient-to-b from-[#242732] via-[#1b1d26] to-[#121319] rounded-b-[22px] sm:rounded-b-[28px] border-x-[2px] sm:border-x-[2.5px] border-b-[3.5px] border-[#373d4d] shadow-[0_25px_60px_rgba(0,0,0,0.45)] flex flex-col items-center px-2.5 sm:px-5 py-2.5 sm:py-3.5 -mt-[1px] z-20">
             
             {/* Center Recessed Hinge */}
             <div className="w-36 sm:w-52 h-1.5 sm:h-2 bg-[#0c0e12] rounded-b-md shadow-inner -mt-2.5 sm:-mt-3.5 border-b border-[#2d3342]" />
 
             {/* Keyboard & Speaker Grille Deck Wrapper */}
-            <div className="w-full flex items-center justify-between gap-2 sm:gap-4 my-1.5 sm:my-2">
+            <div className="w-full flex items-center justify-between gap-1.5 sm:gap-3 my-1.5 sm:my-2">
               
               {/* Left Speaker Micro-Grille */}
               <SpeakerGrid />
 
-              {/* Full Apple Magic Keyboard Matrix */}
-              <Keypad />
+              {/* Full Interactive Apple Magic Keyboard Matrix */}
+              <MacKeypad
+                isKeyActive={isKeyActive}
+                capsLockActive={capsLockActive}
+                handleTriggerKey={handleTriggerKey}
+              />
 
               {/* Right Speaker Micro-Grille */}
               <SpeakerGrid />
@@ -170,15 +323,17 @@ export const MacbookScroll = ({
             </div>
 
             {/* Force Touch Glass Trackpad & Front Opening Notch */}
-            <div className="flex flex-col items-center mt-1">
-              <div className="w-44 sm:w-56 md:w-68 h-9 sm:h-12 md:h-14 bg-gradient-to-b from-[#181a23] to-[#11131a] rounded-xl border border-[#2c3244] shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)]" />
+            <div className="flex flex-col items-center mt-0.5 sm:mt-1">
+              <div className="w-44 sm:w-56 md:w-68 h-8 sm:h-11 md:h-13 bg-gradient-to-b from-[#181a23] to-[#11131a] rounded-xl border border-[#2c3244] shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)] flex items-center justify-center">
+                <span className="text-[9px] font-mono text-slate-600 opacity-60 hidden sm:inline">Force Touch Trackpad</span>
+              </div>
               <div className="w-14 sm:w-20 h-1 bg-[#0b0c0f] rounded-b-md border-t border-[#232733] mt-1" />
             </div>
 
           </div>
 
           {/* Bottom Ambient Floor Glow */}
-          <div className="w-[80%] h-6 bg-gradient-to-r from-transparent via-brand-500/20 to-transparent blur-lg -mt-2 pointer-events-none" />
+          <div className="w-[85%] h-6 bg-gradient-to-r from-transparent via-brand-500/25 to-transparent blur-lg -mt-2 pointer-events-none" />
         </motion.div>
       </div>
     </div>
@@ -191,22 +346,26 @@ export const MacbookScroll = ({
 export const ScreenContent = ({
   src,
   children,
+  activeTab,
+  setActiveTab,
+  searchQuery,
+  isQueryRunning,
+  simulatedSkills,
+  toggleSkill,
 }: {
   src?: string;
   children?: React.ReactNode;
+  activeTab: 'discovery' | 'whatif' | 'vectors' | 'shap';
+  setActiveTab: (tab: 'discovery' | 'whatif' | 'vectors' | 'shap') => void;
+  searchQuery: string;
+  isQueryRunning: boolean;
+  simulatedSkills: string[];
+  toggleSkill: (skill: string) => void;
 }) => {
   const { openAuthModal } = useAuth();
-  const [activeTab, setActiveTab] = useState<'discovery' | 'whatif' | 'vectors' | 'shap'>('discovery');
-  const [simulatedSkills, setSimulatedSkills] = useState<string[]>(['CUDA', 'Kubernetes']);
-
-  const toggleSkill = (skill: string) => {
-    setSimulatedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-    );
-  };
 
   return (
-    <div className="w-full min-h-[360px] sm:min-h-[400px] md:min-h-[430px] bg-[#0b0f17] rounded-lg sm:rounded-xl overflow-hidden border border-[#1f293d] flex flex-col text-slate-100 font-sans relative z-10 shadow-inner">
+    <div className="w-full min-h-[380px] sm:min-h-[420px] md:min-h-[450px] bg-[#0b0f17] rounded-lg sm:rounded-xl overflow-hidden border border-[#1f293d] flex flex-col text-slate-100 font-sans relative z-10 shadow-inner">
       {children ? (
         children
       ) : src ? (
@@ -234,7 +393,7 @@ export const ScreenContent = ({
               <span className="text-emerald-400 font-bold">104,250</span>
               <span className="text-slate-400 hidden sm:inline">vectors live</span>
               <span className="text-slate-600 hidden sm:inline">|</span>
-              <span className="text-brand-300 font-bold hidden sm:inline">1.2ms latency</span>
+              <span className="text-brand-300 font-bold hidden sm:inline">1.2ms</span>
             </div>
 
             {/* Quick Access Action Button */}
@@ -245,6 +404,26 @@ export const ScreenContent = ({
               <span>Explore Live</span>
               <ChevronRight className="w-3 h-3" />
             </button>
+          </div>
+
+          {/* Live Interactive Query Search Bar (Linked to Keyboard) */}
+          <div className="bg-[#090d15] border-b border-[#1f293d] px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 flex-1 min-w-0 font-mono text-[11px]">
+              <Terminal className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+              <span className="text-slate-500 hidden sm:inline">&gt; query:</span>
+              <span className="text-emerald-300 font-bold truncate">
+                {searchQuery || <span className="text-slate-600 font-normal">Type on MacBook keyboard below to filter...</span>}
+              </span>
+              <span className="w-1.5 h-3.5 bg-emerald-400 animate-pulse shrink-0" />
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {isQueryRunning ? (
+                <Badge variant="brand" className="text-[9px] animate-pulse">Running Rank...</Badge>
+              ) : (
+                <span className="text-[9px] text-slate-500 font-mono hidden sm:inline">Keys 1-4 switch tabs &bull; Return executes</span>
+              )}
+            </div>
           </div>
 
           {/* Interactive Screen Tabs */}
@@ -259,7 +438,7 @@ export const ScreenContent = ({
                 }`}
               >
                 <Compass className="w-3 h-3" />
-                <span>Live Discovery</span>
+                <span>1: Live Discovery</span>
               </button>
               <button
                 onClick={() => setActiveTab('whatif')}
@@ -270,7 +449,7 @@ export const ScreenContent = ({
                 }`}
               >
                 <TrendingUp className="w-3 h-3" />
-                <span>What-If Sandbox</span>
+                <span>2: What-If Sandbox</span>
               </button>
               <button
                 onClick={() => setActiveTab('vectors')}
@@ -281,7 +460,7 @@ export const ScreenContent = ({
                 }`}
               >
                 <Database className="w-3 h-3" />
-                <span>HNSW Vectors</span>
+                <span>3: HNSW Vectors</span>
               </button>
               <button
                 onClick={() => setActiveTab('shap')}
@@ -292,7 +471,7 @@ export const ScreenContent = ({
                 }`}
               >
                 <BarChart3 className="w-3 h-3" />
-                <span>TreeSHAP</span>
+                <span>4: TreeSHAP</span>
               </button>
             </div>
 
@@ -308,7 +487,7 @@ export const ScreenContent = ({
               <div className="space-y-2.5">
                 {/* 3 Metric Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <div className="p-2 bg-[#111622] rounded-xl border border-[#1f293d]">
+                  <div className="p-2.5 bg-[#111622] rounded-xl border border-[#1f293d]">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Semantic Vector</span>
                       <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[9px] font-bold">0.942 cos(&theta;)</span>
@@ -318,7 +497,7 @@ export const ScreenContent = ({
                     </div>
                   </div>
 
-                  <div className="p-2 bg-[#111622] rounded-xl border border-[#1f293d]">
+                  <div className="p-2.5 bg-[#111622] rounded-xl border border-[#1f293d]">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Skill Overlap</span>
                       <span className="px-1.5 py-0.2 rounded bg-brand-500/20 text-brand-300 font-mono text-[9px] font-bold">96.4% Matched</span>
@@ -328,7 +507,7 @@ export const ScreenContent = ({
                     </div>
                   </div>
 
-                  <div className="p-2 bg-[#111622] rounded-xl border border-[#1f293d]">
+                  <div className="p-2.5 bg-[#111622] rounded-xl border border-[#1f293d]">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Projected Lift</span>
                       <span className="text-xs font-bold text-cyan-400 font-mono">+$32,000</span>
@@ -340,7 +519,7 @@ export const ScreenContent = ({
                 </div>
 
                 {/* Top Recommendation Role Card 1 */}
-                <div className="p-3 rounded-xl bg-gradient-to-r from-[#111622] via-[#131a29] to-[#111622] border border-[#1f293d] shadow-md space-y-2">
+                <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#111622] via-[#131a29] to-[#111622] border border-[#1f293d] shadow-md space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#1f293d]">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center font-extrabold text-white text-xs shadow-md">
@@ -518,125 +697,117 @@ export const ScreenContent = ({
 };
 
 /* =========================================================================
-   KEYPAD MATRIX WITH APPLE MAGIC KEYBOARD PROPORTIONS & INDIVIDUAL KEYCAPS
+   INTERACTIVE APPLE MAGIC KEYBOARD MATRIX WIRED TO SCREEN
    ========================================================================= */
-export const Keypad = () => {
+export const MacKeypad = ({
+  isKeyActive,
+  capsLockActive,
+  handleTriggerKey,
+}: {
+  isKeyActive: (key: string) => boolean;
+  capsLockActive: boolean;
+  handleTriggerKey: (key: string) => void;
+}) => {
   return (
-    <div className="flex-1 max-w-[680px] bg-[#07080c] rounded-xl sm:rounded-2xl p-1.5 sm:p-2 border border-[#1f2330] shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] flex flex-col gap-1 sm:gap-1.5">
+    <div className="flex-1 max-w-[700px] bg-[#07080c] rounded-xl sm:rounded-2xl p-1 sm:p-2 border border-[#1f2330] shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] flex flex-col gap-0.5 sm:gap-1">
       
       {/* Row 1: Function Keys */}
       <div className="flex w-full gap-0.5 sm:gap-1 items-center">
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><span className="text-[7px]">esc</span></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Sun className="w-2.5 h-2.5 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Sun className="w-2.5 h-2.5 opacity-90" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><span className="text-[7px]">F3</span></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Search className="w-2 h-2 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Mic className="w-2 h-2 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Moon className="w-2 h-2 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><SkipBack className="w-2.5 h-2.5 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Play className="w-2.5 h-2.5 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><SkipForward className="w-2.5 h-2.5 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><VolumeX className="w-2.5 h-2.5 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Volume2 className="w-2.5 h-2.5 opacity-60" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem]"><Volume2 className="w-2.5 h-2.5 opacity-90" /></Key>
-        <Key className="flex-1 h-[0.95rem] sm:h-[1.25rem] bg-[#141722] border-[#2b3040]">
+        <KeyButton isActive={isKeyActive('escape')} onClick={() => handleTriggerKey('Escape')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><span className="text-[7px]">esc</span></KeyButton>
+        <KeyButton isActive={isKeyActive('f1')} onClick={() => handleTriggerKey('F1')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Sun className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f2')} onClick={() => handleTriggerKey('F2')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Sun className="w-2 h-2 opacity-90" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f3')} onClick={() => handleTriggerKey('F3')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><span className="text-[7px]">F3</span></KeyButton>
+        <KeyButton isActive={isKeyActive('f4')} onClick={() => handleTriggerKey('F4')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Search className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f5')} onClick={() => handleTriggerKey('F5')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Mic className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f6')} onClick={() => handleTriggerKey('F6')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Moon className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f7')} onClick={() => handleTriggerKey('F7')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><SkipBack className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f8')} onClick={() => handleTriggerKey('F8')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Play className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f9')} onClick={() => handleTriggerKey('F9')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><SkipForward className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f10')} onClick={() => handleTriggerKey('F10')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><VolumeX className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f11')} onClick={() => handleTriggerKey('F11')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Volume1 className="w-2 h-2 opacity-60" /></KeyButton>
+        <KeyButton isActive={isKeyActive('f12')} onClick={() => handleTriggerKey('F12')} className="flex-1 h-[0.9rem] sm:h-[1.2rem]"><Volume2 className="w-2 h-2 opacity-90" /></KeyButton>
+        <KeyButton isActive={isKeyActive('power')} onClick={() => handleTriggerKey('Power')} className="flex-1 h-[0.9rem] sm:h-[1.2rem] bg-[#141722] border-brand-500/40">
           <span className="text-[8px] text-brand-400 font-bold">⌽</span>
-        </Key>
+        </KeyButton>
       </div>
 
       {/* Row 2: Numbers */}
       <div className="flex w-full gap-0.5 sm:gap-1 items-center">
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">~</span><span>`</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">!</span><span>1</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">@</span><span>2</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">#</span><span>3</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">$</span><span>4</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">%</span><span>5</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">^</span><span>6</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">&</span><span>7</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">*</span><span>8</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">(</span><span>9</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">)</span><span>0</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">_</span><span>-</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">+</span><span>=</span></Key>
-        <Key className="flex-[1.6]"><span className="text-[7px] sm:text-[8px]">delete</span></Key>
+        {['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='].map((k) => (
+          <KeyButton key={k} isActive={isKeyActive(k)} onClick={() => handleTriggerKey(k)} className="flex-1">
+            <span>{k}</span>
+          </KeyButton>
+        ))}
+        <KeyButton isActive={isKeyActive('backspace') || isKeyActive('delete')} onClick={() => handleTriggerKey('Backspace')} className="flex-[1.6]">
+          <span className="text-[7px] sm:text-[8.5px]">delete</span>
+        </KeyButton>
       </div>
 
       {/* Row 3: QWERTY */}
       <div className="flex w-full gap-0.5 sm:gap-1 items-center">
-        <Key className="flex-[1.5]"><span className="text-[7px] sm:text-[8px]">tab</span></Key>
-        <Key className="flex-1">Q</Key>
-        <Key className="flex-1">W</Key>
-        <Key className="flex-1">E</Key>
-        <Key className="flex-1">R</Key>
-        <Key className="flex-1">T</Key>
-        <Key className="flex-1">Y</Key>
-        <Key className="flex-1">U</Key>
-        <Key className="flex-1">I</Key>
-        <Key className="flex-1">O</Key>
-        <Key className="flex-1">P</Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">{'{'}</span><span>[</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">{'}'}</span><span>]</span></Key>
-        <Key className="flex-[1.1]"><span className="text-[6px] block -mb-0.5">|</span><span>\</span></Key>
+        <KeyButton isActive={isKeyActive('tab')} onClick={() => handleTriggerKey('Tab')} className="flex-[1.5]">
+          <span className="text-[7px] sm:text-[8.5px]">tab</span>
+        </KeyButton>
+        {['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']'].map((k) => (
+          <KeyButton key={k} isActive={isKeyActive(k)} onClick={() => handleTriggerKey(k.toUpperCase())} className="flex-1">
+            <span>{k.toUpperCase()}</span>
+          </KeyButton>
+        ))}
+        <KeyButton isActive={isKeyActive('\\')} onClick={() => handleTriggerKey('\\')} className="flex-[1.1]">
+          <span>\</span>
+        </KeyButton>
       </div>
 
       {/* Row 4: ASDF */}
       <div className="flex w-full gap-0.5 sm:gap-1 items-center">
-        <Key className="flex-[1.75] relative">
-          <span className="w-1 h-1 rounded-full bg-emerald-400 absolute top-1 left-1.5 opacity-80" />
-          <span className="text-[7px] sm:text-[8px]">caps lock</span>
-        </Key>
-        <Key className="flex-1">A</Key>
-        <Key className="flex-1">S</Key>
-        <Key className="flex-1">D</Key>
-        <Key className="flex-1">F</Key>
-        <Key className="flex-1">G</Key>
-        <Key className="flex-1">H</Key>
-        <Key className="flex-1">J</Key>
-        <Key className="flex-1">K</Key>
-        <Key className="flex-1">L</Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">:</span><span>;</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">"</span><span>'</span></Key>
-        <Key className="flex-[1.85] bg-[#171a24] border-[#2c3244]">
-          <span className="text-[7px] sm:text-[8px] mr-1 hidden sm:inline">return</span>
+        <KeyButton isActive={isKeyActive('capslock') || capsLockActive} onClick={() => handleTriggerKey('CapsLock')} className="flex-[1.75] relative">
+          <span className={cn('w-1 h-1 rounded-full absolute top-1 left-1.5 transition-opacity', capsLockActive ? 'bg-emerald-400 opacity-100 shadow-[0_0_6px_#10b981]' : 'bg-slate-700 opacity-40')} />
+          <span className="text-[7px] sm:text-[8.5px]">caps lock</span>
+        </KeyButton>
+        {['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'"].map((k) => (
+          <KeyButton key={k} isActive={isKeyActive(k)} onClick={() => handleTriggerKey(k.toUpperCase())} className="flex-1">
+            <span>{k.toUpperCase()}</span>
+          </KeyButton>
+        ))}
+        <KeyButton isActive={isKeyActive('enter')} onClick={() => handleTriggerKey('Enter')} className="flex-[1.85] bg-[#161a26] border-[#2d3448]">
+          <span className="text-[7px] sm:text-[8.5px] mr-1 hidden sm:inline">return</span>
           <CornerDownLeft className="w-2.5 h-2.5 inline" />
-        </Key>
+        </KeyButton>
       </div>
 
       {/* Row 5: ZXCV */}
       <div className="flex w-full gap-0.5 sm:gap-1 items-center">
-        <Key className="flex-[2.2]"><span className="text-[7px] sm:text-[8px]">shift</span></Key>
-        <Key className="flex-1">Z</Key>
-        <Key className="flex-1">X</Key>
-        <Key className="flex-1">C</Key>
-        <Key className="flex-1">V</Key>
-        <Key className="flex-1">B</Key>
-        <Key className="flex-1">N</Key>
-        <Key className="flex-1">M</Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">&lt;</span><span>,</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">&gt;</span><span>.</span></Key>
-        <Key className="flex-1"><span className="text-[6px] block -mb-0.5">?</span><span>/</span></Key>
-        <Key className="flex-[2.2]"><span className="text-[7px] sm:text-[8px]">shift</span></Key>
+        <KeyButton isActive={isKeyActive('shift')} onClick={() => handleTriggerKey('Shift')} className="flex-[2.2]">
+          <span className="text-[7px] sm:text-[8.5px]">shift</span>
+        </KeyButton>
+        {['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'].map((k) => (
+          <KeyButton key={k} isActive={isKeyActive(k)} onClick={() => handleTriggerKey(k.toUpperCase())} className="flex-1">
+            <span>{k.toUpperCase()}</span>
+          </KeyButton>
+        ))}
+        <KeyButton isActive={isKeyActive('shift')} onClick={() => handleTriggerKey('Shift')} className="flex-[2.2]">
+          <span className="text-[7px] sm:text-[8.5px]">shift</span>
+        </KeyButton>
       </div>
 
-      {/* Row 6: Spacebar & Modifiers */}
+      {/* Row 6: Modifiers & Spacebar */}
       <div className="flex w-full gap-0.5 sm:gap-1 items-center">
-        <Key className="flex-[0.9]"><span className="text-[7px]">fn</span></Key>
-        <Key className="flex-[0.9]"><span className="text-[7px]">control</span></Key>
-        <Key className="flex-[0.9]"><Option className="w-2.5 h-2.5" /></Key>
-        <Key className="flex-[1.25]"><Command className="w-2.5 h-2.5" /></Key>
-        <Key className="flex-[5.4] bg-[#141722] hover:bg-[#1c202e]" />
-        <Key className="flex-[1.25]"><Command className="w-2.5 h-2.5" /></Key>
-        <Key className="flex-[0.9]"><Option className="w-2.5 h-2.5" /></Key>
-        
-        {/* Inverted-T Arrow Keys Cluster */}
+        <KeyButton isActive={isKeyActive('fn')} onClick={() => handleTriggerKey('fn')} className="flex-[0.9]"><span className="text-[7px]">fn</span></KeyButton>
+        <KeyButton isActive={isKeyActive('control')} onClick={() => handleTriggerKey('control')} className="flex-[0.9]"><span className="text-[7px]">ctrl</span></KeyButton>
+        <KeyButton isActive={isKeyActive('alt') || isKeyActive('option')} onClick={() => handleTriggerKey('option')} className="flex-[0.9]"><Option className="w-2.5 h-2.5" /></KeyButton>
+        <KeyButton isActive={isKeyActive('meta') || isKeyActive('command')} onClick={() => handleTriggerKey('command')} className="flex-[1.25]"><Command className="w-2.5 h-2.5" /></KeyButton>
+        <KeyButton isActive={isKeyActive(' ')} onClick={() => handleTriggerKey(' ')} className="flex-[5.4] bg-[#141722] hover:bg-[#1c202e]" />
+        <KeyButton isActive={isKeyActive('meta') || isKeyActive('command')} onClick={() => handleTriggerKey('command')} className="flex-[1.25]"><Command className="w-2.5 h-2.5" /></KeyButton>
+        <KeyButton isActive={isKeyActive('alt') || isKeyActive('option')} onClick={() => handleTriggerKey('option')} className="flex-[0.9]"><Option className="w-2.5 h-2.5" /></KeyButton>
+
+        {/* Inverted-T Arrows */}
         <div className="flex-[1.7] flex gap-0.5 items-end h-[1.35rem] sm:h-[1.75rem] md:h-[2rem]">
-          <Key className="flex-1 h-full"><ArrowLeft className="w-2 h-2" /></Key>
+          <KeyButton isActive={isKeyActive('arrowleft')} onClick={() => handleTriggerKey('ArrowLeft')} className="flex-1 h-full"><ArrowLeft className="w-2 h-2" /></KeyButton>
           <div className="flex-1 flex flex-col gap-0.5 h-full">
-            <Key className="w-full flex-1"><ArrowUp className="w-1.5 h-1.5" /></Key>
-            <Key className="w-full flex-1"><ArrowDown className="w-1.5 h-1.5" /></Key>
+            <KeyButton isActive={isKeyActive('arrowup')} onClick={() => handleTriggerKey('ArrowUp')} className="w-full flex-1"><ArrowUp className="w-1.5 h-1.5" /></KeyButton>
+            <KeyButton isActive={isKeyActive('arrowdown')} onClick={() => handleTriggerKey('ArrowDown')} className="w-full flex-1"><ArrowDown className="w-1.5 h-1.5" /></KeyButton>
           </div>
-          <Key className="flex-1 h-full"><ArrowRight className="w-2 h-2" /></Key>
+          <KeyButton isActive={isKeyActive('arrowright')} onClick={() => handleTriggerKey('ArrowRight')} className="flex-1 h-full"><ArrowRight className="w-2 h-2" /></KeyButton>
         </div>
       </div>
 
@@ -644,22 +815,29 @@ export const Keypad = () => {
   );
 };
 
-export const Key = ({
+export const KeyButton = ({
   children,
   className,
+  isActive = false,
+  onClick,
 }: {
   children?: React.ReactNode;
   className?: string;
+  isActive?: boolean;
+  onClick?: () => void;
 }) => {
   return (
-    <div
+    <button
+      type="button"
+      onClick={onClick}
       className={cn(
-        'h-[1.35rem] sm:h-[1.75rem] md:h-[2rem] bg-[#12141c] hover:bg-[#1a1e2a] text-slate-300 font-mono text-[7.5px] sm:text-[9px] md:text-[10px] rounded-[3px] sm:rounded-[4px] border border-[#232734] shadow-[0_1.5px_1px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.06)] flex flex-col items-center justify-center transition-colors select-none px-0.5',
-        className,
+        'h-[1.35rem] sm:h-[1.75rem] md:h-[2rem] bg-[#12141c] hover:bg-[#1a1e2a] text-slate-300 font-mono text-[7.5px] sm:text-[9px] md:text-[10px] rounded-[3px] sm:rounded-[4px] border border-[#232734] shadow-[0_1.5px_1px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.06)] flex flex-col items-center justify-center transition-all select-none cursor-pointer active:scale-95 active:translate-y-[0.5px]',
+        isActive && 'bg-[#283247] text-white border-brand-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.8),0_0_8px_rgba(99,102,241,0.5)] scale-95 translate-y-[0.5px]',
+        className
       )}
     >
       {children}
-    </div>
+    </button>
   );
 };
 

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, TrendingUp, Filter, CheckCircle2, ChevronRight, Activity, Plus, RefreshCw, Compass, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { MacbookScroll } from './ui/macbook-scroll';
 import { api, Recommendation, WhatIfResult } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 
@@ -60,24 +59,6 @@ export function ProductShowcase() {
   return (
     <section id="showcase" className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Aceternity UI 3D Macbook Scroll Showcase */}
-        <div className="w-full overflow-visible mb-16">
-          <MacbookScroll
-            badge={
-              <Badge variant="brand" className="font-bold">
-                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-brand-600" />
-                <span>3D Interactive Architecture</span>
-              </Badge>
-            }
-            title={
-              <span>
-                Deterministic Intelligence. <br />
-                <span className="gradient-text">Rendered on the Big Screen.</span>
-              </span>
-            }
-          />
-        </div>
 
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">

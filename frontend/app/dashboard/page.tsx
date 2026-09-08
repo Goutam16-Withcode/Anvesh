@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Compass, TrendingUp, Sparkles, LogOut, CheckCircle2, User, Layers, ArrowLeft, Send, Bot, RefreshCw, Briefcase, Zap } from 'lucide-react';
+import { Compass, TrendingUp, Sparkles, LogOut, CheckCircle2, User, Layers, ArrowLeft, Send, Terminal, RefreshCw, Briefcase, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
@@ -295,7 +295,7 @@ export default function DashboardPage() {
             <div className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-subtle space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Bot className="w-5 h-5 text-brand-600" />
+                  <Terminal className="w-5 h-5 text-brand-600" />
                   <span>AI Career Agent (Tool-Calling)</span>
                 </h3>
                 <span className="text-[10px] text-emerald-600 font-mono font-bold flex items-center gap-1">

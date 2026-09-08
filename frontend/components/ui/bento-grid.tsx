@@ -1,5 +1,7 @@
-import * as React from 'react';
+'use client';
+
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 export const BentoGrid = ({
   className,
@@ -11,8 +13,8 @@ export const BentoGrid = ({
   return (
     <div
       className={cn(
-        'grid md:auto-rows-[22rem] grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto',
-        className,
+        'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 max-w-7xl mx-auto',
+        className
       )}
     >
       {children}
@@ -41,28 +43,26 @@ export const BentoGridItem = ({
     <div
       onClick={onClick}
       className={cn(
-        'row-span-1 rounded-3xl group/bento hover:shadow-premium transition-all duration-300 p-6 bg-white border border-slate-200/90 justify-between flex flex-col space-y-4 hover:border-brand-300 relative overflow-hidden',
-        className,
+        'row-span-1 rounded-3xl group/bento hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 bg-white dark:bg-[#0e121b] border border-slate-200/90 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-500/50 justify-between flex flex-col space-y-4 cursor-pointer relative overflow-hidden',
+        className
       )}
     >
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-100/40 to-transparent rounded-full blur-2xl pointer-events-none opacity-0 group-hover/bento:opacity-100 transition-opacity" />
-      
+      {/* Top subtle hover highlight gradient */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-500/50 to-transparent opacity-0 group-hover/bento:opacity-100 transition-opacity" />
+
       {header}
-      
-      <div className="transition duration-200 relative z-10">
-        <div className="flex items-center justify-between mb-3">
-          {icon && (
-            <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100/80 group-hover/bento:scale-110 group-hover/bento:bg-brand-600 group-hover/bento:text-white transition-all duration-300">
-              {icon}
+
+      <div className="group-hover/bento:translate-x-1 transition duration-200 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {icon}
+            <div className="font-extrabold text-slate-900 dark:text-slate-100 text-base sm:text-lg">
+              {title}
             </div>
-          )}
+          </div>
           {badge}
         </div>
-
-        <div className="font-bold text-slate-900 text-lg mb-1.5 tracking-tight group-hover/bento:text-brand-600 transition-colors">
-          {title}
-        </div>
-        <div className="font-normal text-slate-600 text-sm leading-relaxed">
+        <div className="font-normal text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
           {description}
         </div>
       </div>

@@ -1,93 +1,120 @@
 'use client';
 
 import React from 'react';
-import { Accordion } from './ui/accordion';
+import { 
+  Sparkles, 
+  HelpCircle,
+  Compass, 
+  TrendingUp, 
+  ShieldCheck, 
+  Key, 
+  Rocket, 
+  GitBranch, 
+  FileCheck2,
+  Lock
+} from 'lucide-react';
+import { Accordion, AccordionItemData } from './ui/accordion';
 import { Badge } from './ui/badge';
 
 export function FAQSection() {
-  const faqItems = [
+  const faqItems: AccordionItemData[] = [
     {
-      title: 'What is ANVESH and how does it differ from traditional job boards?',
+      icon: <Compass className="w-4 h-4 text-brand-600" />,
+      title: 'What is ANVESH and how does it help my job search?',
       content: (
         <p>
-          ANVESH (Sanskrit for <em>Discovery & Exploration</em>) is an AI-powered career intelligence and recommendation platform. Unlike legacy portals that rely on brittle keyword string matching, ANVESH utilizes a deterministic 4-stage hybrid recommendation pipeline (Vector Retrieval via Qdrant, Skill Graph Normalization, LightGBM LambdaMART ranking, and MMR Multi-Objective diversification) to deliver transparent, highly personalized career matches.
+          ANVESH (Sanskrit for <em>Discovery &amp; Exploration</em>) is an intelligent career platform designed to replace broken ATS keyword matching. It analyzes your verified experience and technical depth to recommend roles tailored precisely to your background, complete with transparent match score breakdowns.
         </p>
       ),
     },
     {
-      title: 'How does the Counterfactual What-If Simulation Engine work?',
+      icon: <TrendingUp className="w-4 h-4 text-emerald-600" />,
+      title: 'How does the What-If Career Simulator work?',
       content: (
         <p>
-          The What-If Engine allows candidates to simulate adding hypothetical skills (e.g. <em>Kubernetes</em>, <em>CUDA</em>, or <em>Go</em>) to their verified profile vector. It runs zero-hallucination re-indexing against the active job catalog in real time, computing the exact opportunity count increase (&Delta;N) and median market salary trajectory lift.
+          The What-If Simulator lets you test adding prospective skills (like <em>Kubernetes</em>, <em>CUDA</em>, or <em>Go</em>) to see the exact increase in matching job openings and projected salary lift—before spending months learning them.
         </p>
       ),
     },
     {
-      title: 'Which authentication options are supported in ANVESH?',
+      icon: <Rocket className="w-4 h-4 text-purple-600" />,
+      title: 'Is ANVESH free to use for job seekers?',
       content: (
         <p>
-          ANVESH supports both <strong>Firebase Google Authentication</strong> (&ldquo;Continue with Google&rdquo;) for instant, secure sign-in and traditional <strong>Manual Email & Password Authentication</strong> protected by bcrypt password hashing and NestJS JWT Bearer session tokens.
+          <strong>Yes, 100% free!</strong> Creating an account, uploading your resume, viewing personalized career recommendations, and running What-If counterfactual simulations are completely free for all candidates.
         </p>
       ),
     },
     {
-      title: 'How does the Canonical Skill Ontology prevent ATS rejection?',
+      icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />,
+      title: 'How is my resume and personal data protected?',
       content: (
         <p>
-          Arbitrary skill variants like &ldquo;k8s&rdquo;, &ldquo;Kubernetes&rdquo;, and &ldquo;Container Orchestration&rdquo; are normalized into standardized canonical nodes defined in <code>skills.json</code>. This guarantees that candidates are evaluated based on their true technical depth rather than minor terminology mismatches.
+          Your privacy is guaranteed. Your resume and profile embeddings are stored in isolated private databases. Your data is <strong>never sold to third-party data brokers</strong> and is <strong>never used to train public AI models</strong>. You can permanently delete your account and data at any time.
         </p>
       ),
     },
     {
-      title: 'Is my uploaded resume data secure and confidential?',
+      icon: <FileCheck2 className="w-4 h-4 text-cyan-600" />,
+      title: 'How does ANVESH prevent unfair rejections from keyword filters?',
       content: (
         <p>
-          Yes. ANVESH stores candidate embeddings and profile metadata in isolated private namespaces in PostgreSQL 16 and Qdrant. Your data is strictly used for recommendation ranking and is never resold to third-party data brokers or used to train public foundation models.
+          ANVESH normalizes skills into standardized ontology categories (e.g. recognizing that <em>&ldquo;K8s&rdquo;</em>, <em>&ldquo;Kubernetes&rdquo;</em>, and <em>&ldquo;Container Orchestration&rdquo;</em> represent the same core competency). This ensures you are evaluated on your real engineering abilities rather than minor phrasing differences.
         </p>
       ),
     },
     {
-      title: 'How does the AI Career Agent generate responses?',
+      icon: <GitBranch className="w-4 h-4 text-indigo-600" />,
+      title: 'Can I use ANVESH if I want to switch career roles or tech stacks?',
       content: (
         <p>
-          The ANVESH Agent is built on deterministic tool-calling microservices (LangChain orchestrator). Instead of guessing or fabricating career insights, it executes tools like <code>discover_roles()</code>, <code>calculate_skill_gap()</code>, and <code>simulate_skill()</code> to provide verified answers backed by live data.
+          Yes! The Role Pathways feature is built specifically for career transitions. It analyzes adjacent domains with high skill overlap (e.g., moving from Backend Engineering to AI Infrastructure) and maps the fastest route to your target role.
         </p>
       ),
     },
     {
-      title: 'Is there a free tier to explore ANVESH?',
+      icon: <Key className="w-4 h-4 text-amber-600" />,
+      title: 'What sign-in options do you support?',
       content: (
         <p>
-          Yes! Creating an account, running deterministic resume parsing, viewing top multi-stage job recommendations, and testing counterfactual What-If simulations are completely free for candidates.
+          We support instant 1-click sign-in with Google via Firebase Authentication as well as standard manual email and password accounts secured with enterprise-grade encryption.
         </p>
       ),
     },
     {
+      icon: <Sparkles className="w-4 h-4 text-brand-600" />,
       title: 'How do I get started with ANVESH?',
       content: (
         <p>
-          Click the <strong>Get Started Free</strong> button, create your account or sign in with Google, upload your resume or select your verified skills, and immediately access your personalized discovery feed and What-If career acceleration dashboard.
+          Simply click <strong>Get Started</strong>, sign in with Google or your email, and upload your resume or select your verified skills to immediately explore live personalized job recommendations.
         </p>
       ),
     },
   ];
 
   return (
-    <section id="faq" className="py-20 md:py-32 bg-white relative">
+    <section id="faq" className="py-20 md:py-32 bg-white relative overflow-hidden">
+      
+      {/* Background Ambient Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-gradient-to-tr from-brand-500/10 via-indigo-500/5 to-emerald-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-16 space-y-4">
-          <Badge variant="brand" className="font-bold">
-            Frequently Asked Questions
+        {/* Clean Section Header */}
+        <div className="text-center mb-14 space-y-4">
+          <Badge variant="brand" className="font-bold px-3 py-1 text-xs">
+            <HelpCircle className="w-3.5 h-3.5 mr-1.5 text-brand-600 animate-pulse" />
+            <span>Frequently Asked Questions</span>
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.18]">
             Everything You Need to Know About ANVESH
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Got questions about our deterministic retrieval architecture, scoring formulas, or security? We have answers.
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+            Got questions about how ANVESH matches roles, calculates simulations, or protects your privacy? We have answers.
           </p>
         </div>
 
+        {/* Clean All-Questions Accordion List */}
         <Accordion items={faqItems} />
 
       </div>
