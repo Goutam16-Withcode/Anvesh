@@ -12,19 +12,23 @@ export const TextHoverEffect = ({
   automatic?: boolean;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [cursor, setCursor] = useState<{ x: number | null; y: number | null }>({ x: null, y: null });
   const [hovered, setHovered] = useState(false);
   const [maskPosition, setMaskPosition] = useState({ cx: '50%', cy: '50%' });
 
   useEffect(() => {
     if (svgRef.current && cursor.x !== null && cursor.y !== null) {
       const svgRect = svgRef.current.getBoundingClientRect();
-      const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
-      const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
-      setMaskPosition({
-        cx: `${cxPercentage}%`,
-        cy: `${cyPercentage}%`,
-      });
+      if (svgRect && svgRect.width > 0 && svgRect.height > 0) {
+        const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
+        const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
+        if (Number.isFinite(cxPercentage) && Number.isFinite(cyPercentage)) {
+          setMaskPosition({
+            cx: `${cxPercentage.toFixed(2)}%`,
+            cy: `${cyPercentage.toFixed(2)}%`,
+          });
+        }
+      }
     }
   }, [cursor]);
 
@@ -36,7 +40,10 @@ export const TextHoverEffect = ({
       viewBox="0 0 450 110"
       xmlns="http://www.w3.org/2000/svg"
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => {
+        setHovered(false);
+        setCursor({ x: null, y: null });
+      }}
       onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
       className="select-none"
     >
@@ -60,21 +67,16 @@ export const TextHoverEffect = ({
           )}
         </linearGradient>
 
-        <motion.radialGradient
+        <radialGradient
           id="revealMask"
           gradientUnits="userSpaceOnUse"
-          cx={maskPosition.cx || "50%"}
-          cy={maskPosition.cy || "50%"}
-          r="20%"
-          animate={{
-            cx: maskPosition.cx || "50%",
-            cy: maskPosition.cy || "50%",
-          }}
-          transition={{ duration: duration ?? 0, ease: 'easeOut' }}
+          cx={maskPosition?.cx || '50%'}
+          cy={maskPosition?.cy || '50%'}
+          r="25%"
         >
           <stop offset="0%" stopColor="white" />
           <stop offset="100%" stopColor="black" />
-        </motion.radialGradient>
+        </radialGradient>
         <mask id="textMask">
           <rect
             x="0"
