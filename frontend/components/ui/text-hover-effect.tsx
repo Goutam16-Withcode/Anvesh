@@ -44,9 +44,10 @@ export const TextHoverEffect = ({
         <linearGradient
           id="textGradient"
           gradientUnits="userSpaceOnUse"
-          cx="50%"
-          cy="50%"
-          r="25%"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="100%"
         >
           {hovered && (
             <>
@@ -62,8 +63,13 @@ export const TextHoverEffect = ({
         <motion.radialGradient
           id="revealMask"
           gradientUnits="userSpaceOnUse"
+          cx={maskPosition.cx || "50%"}
+          cy={maskPosition.cy || "50%"}
           r="20%"
-          animate={maskPosition}
+          animate={{
+            cx: maskPosition.cx || "50%",
+            cy: maskPosition.cy || "50%",
+          }}
           transition={{ duration: duration ?? 0, ease: 'easeOut' }}
         >
           <stop offset="0%" stopColor="white" />

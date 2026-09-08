@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
@@ -9,6 +9,12 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#ffffff',
+};
 
 export const metadata: Metadata = {
   title: 'ANVESH — AI-Powered Global Career Discovery & Multi-Stage Recommendation Platform',
@@ -25,8 +31,6 @@ export const metadata: Metadata = {
     'LightGBM',
   ],
   authors: [{ name: 'ANVESH AI Team' }],
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#ffffff',
 };
 
 export default function RootLayout({
