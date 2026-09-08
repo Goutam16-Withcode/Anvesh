@@ -147,7 +147,7 @@ export function Footer() {
           {/* Column 1: ANVESH Identity & System Verification */}
           <div className="space-y-4">
             <Link href="/" className="focus:outline-none inline-block">
-              <AnveshBrandLockup size="md" />
+              <AnveshBrandLockup size="md" isDarkBackground={true} />
             </Link>
 
             <p className="text-xs text-slate-400 leading-relaxed">

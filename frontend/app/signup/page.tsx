@@ -7,6 +7,7 @@ import { Compass, Mail, Lock, User, Eye, EyeOff, CheckCircle2, AlertCircle, Arro
 import { Button } from '@/components/ui/button';
 import { AceternityInput, LabelInputContainer, BottomGradient } from '@/components/ui/signup-form';
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
+import { AnveshBrandLockup } from '@/components/ui/anvesh-logo';
 import { useAuth } from '@/lib/auth-context';
 
 const loadingStates = [
@@ -95,12 +96,9 @@ export default function SignupPage() {
             <span>Back to Home</span>
           </Link>
 
-          <div className="flex justify-center mb-3">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
-                <Compass className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-extrabold text-slate-900 tracking-tight">ANVESH</span>
+          <div className="flex justify-center mb-4">
+            <Link href="/" className="focus:outline-none inline-block">
+              <AnveshBrandLockup size="lg" />
             </Link>
           </div>
 

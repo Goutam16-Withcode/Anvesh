@@ -32,6 +32,7 @@ import {
   Terminal
 } from 'lucide-react';
 import { Badge } from './badge';
+import { AnveshLogo } from './anvesh-logo';
 import { useAuth } from '@/lib/auth-context';
 
 // Web Audio API mechanical key click synthesizer
@@ -381,7 +382,7 @@ export const ScreenContent = ({
                 <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] hover:opacity-80 transition-opacity cursor-pointer" />
               </div>
               <div className="hidden md:flex items-center gap-1.5 ml-3 pl-3 border-l border-slate-800 text-[11px] text-slate-400">
-                <Compass className="w-3.5 h-3.5 text-brand-400" />
+                <AnveshLogo size={14} withGlow={false} />
                 <span className="font-semibold text-slate-200">ANVESH Discovery Console</span>
                 <span className="text-slate-500 font-mono text-[10px]">v2.4.0</span>
               </div>
@@ -437,7 +438,7 @@ export const ScreenContent = ({
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                 }`}
               >
-                <Compass className="w-3 h-3" />
+                <AnveshLogo size={12} withGlow={false} />
                 <span>1: Live Discovery</span>
               </button>
               <button

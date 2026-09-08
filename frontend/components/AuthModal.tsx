@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { AceternityInput, LabelInputContainer, BottomGradient } from './ui/signup-form';
 import { MultiStepLoader } from './ui/multi-step-loader';
 import { useAuth } from '@/lib/auth-context';
+import { AnveshLogo } from './ui/anvesh-logo';
 
 const loadingStates = [
   { text: 'Validating cryptographic credentials...' },
@@ -140,8 +141,8 @@ export function AuthModal() {
 
           {/* Modal Branding Header */}
           <div className="text-center space-y-2 mb-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-sm mb-1">
-              <Compass className="w-6 h-6 animate-pulse-subtle" />
+            <div className="inline-flex items-center justify-center mb-1">
+              <AnveshLogo size="lg" variant="brand" />
             </div>
             <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
               {isSignup ? 'Create Your Free Account' : 'Welcome Back to ANVESH'}

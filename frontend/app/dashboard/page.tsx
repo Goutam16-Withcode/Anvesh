@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Compass, TrendingUp, Sparkles, LogOut, CheckCircle2, User, Layers, ArrowLeft, Send, Terminal, RefreshCw, Briefcase, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { AnveshBrandLockup } from '@/components/ui/anvesh-logo';
 import { useAuth } from '@/lib/auth-context';
 import { api, Recommendation, WhatIfResult } from '@/lib/api';
 
@@ -94,11 +95,8 @@ export default function DashboardPage() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-sm">
-                <Compass className="w-5 h-5" />
-              </div>
-              <span className="font-extrabold text-lg text-slate-900 tracking-tight">ANVESH</span>
+            <Link href="/" className="focus:outline-none">
+              <AnveshBrandLockup size="sm" />
             </Link>
             <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
               Active Session

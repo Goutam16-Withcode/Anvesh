@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     'LightGBM',
   ],
   authors: [{ name: 'ANVESH AI Team' }],
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
