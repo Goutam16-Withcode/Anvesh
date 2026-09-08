@@ -23,7 +23,7 @@ export function FAQSection() {
       title: 'What is ANVESH and how does it help my job search?',
       content: (
         <p>
-          ANVESH (Sanskrit for <em>Discovery &amp; Exploration</em>) is an intelligent career platform designed to replace broken ATS keyword matching. It analyzes your verified experience and technical depth to recommend roles tailored precisely to your background, complete with transparent match score breakdowns.
+          ANVESH (derived from Sanskrit <strong>अन्वेषण</strong> for <em>Inquiry &amp; Deep Search</em>) is an intelligent career platform designed to replace broken ATS keyword matching. It analyzes your verified experience and technical depth to recommend roles tailored precisely to your background, complete with transparent match score breakdowns.
         </p>
       ),
     },
