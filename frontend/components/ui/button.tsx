@@ -31,9 +31,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: 'text-xs px-3.5 py-1.5 gap-1.5 h-8',
-      md: 'text-sm px-4.5 py-2.5 gap-2 h-10',
-      lg: 'text-base px-6 py-3.5 gap-2.5 h-12',
+      sm: 'text-xs px-4 py-1.5 gap-1.5 min-h-[36px]',
+      md: 'text-sm px-5 py-2.5 gap-2 min-h-[44px]',
+      lg: 'text-base px-7 py-3.5 gap-2.5 min-h-[50px]',
     };
 
     const isNoiseVariant = variant === 'noise' || variant === 'noise-dark' || variant === 'primary';
@@ -60,7 +60,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <div className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[sweep_0.75s_ease-in-out]" />
           </>
         )}
-        <span className="relative z-10 flex items-center justify-center gap-2">{children}</span>
+        <span className="relative z-10 flex items-center justify-center gap-2 whitespace-normal leading-normal text-center">{children}</span>
       </button>
     );
   },

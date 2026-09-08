@@ -134,12 +134,12 @@ export function AdvancedFeatures() {
 
         {/* Aceternity Interactive Animated Segmented Tabs */}
         <div className="flex justify-center">
-          <div className="relative p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl flex flex-wrap gap-1 justify-center">
+          <div className="relative p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl flex flex-wrap gap-1.5 justify-center max-w-full">
             
             {/* Tab 1: What-If */}
             <button
               onClick={() => setActiveTab('what-if')}
-              className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+              className={`relative z-10 flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap shrink-0 ${
                 activeTab === 'what-if' ? 'text-white' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -150,14 +150,14 @@ export function AdvancedFeatures() {
                   transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                 />
               )}
-              <TrendingUp className="w-4 h-4 relative z-10 text-emerald-400" />
+              <TrendingUp className="w-4 h-4 relative z-10 text-emerald-400 shrink-0" />
               <span className="relative z-10">What-If Simulation</span>
             </button>
 
             {/* Tab 2: AI Career Agent */}
             <button
               onClick={() => setActiveTab('agent')}
-              className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+              className={`relative z-10 flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap shrink-0 ${
                 activeTab === 'agent' ? 'text-white' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -168,14 +168,14 @@ export function AdvancedFeatures() {
                   transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                 />
               )}
-              <AgentIcon className="w-4 h-4 relative z-10 text-brand-300" />
+              <AgentIcon className="w-4 h-4 relative z-10 text-brand-300 shrink-0" />
               <span className="relative z-10">AI Career Agent</span>
             </button>
 
             {/* Tab 3: Role Pathways */}
             <button
               onClick={() => setActiveTab('pathway')}
-              className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+              className={`relative z-10 flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap shrink-0 ${
                 activeTab === 'pathway' ? 'text-white' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -186,7 +186,7 @@ export function AdvancedFeatures() {
                   transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                 />
               )}
-              <Compass className="w-4 h-4 relative z-10 text-cyan-400" />
+              <Compass className="w-4 h-4 relative z-10 text-cyan-400 shrink-0" />
               <span className="relative z-10">Role Pathways</span>
             </button>
 
@@ -244,11 +244,11 @@ export function AdvancedFeatures() {
                     <Button
                       variant="noise"
                       size="md"
-                      className="font-bold text-xs gap-2 shadow-lg shadow-brand-500/25"
+                      className="font-bold text-sm px-6 py-3 w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25"
                       onClick={() => openAuthModal('signup')}
                     >
-                      <span>Launch Full What-If Simulator</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <span>Launch What-If Sandbox</span>
+                      <ArrowRight className="w-4 h-4 shrink-0" />
                     </Button>
                   </div>
                 </div>
@@ -275,24 +275,24 @@ export function AdvancedFeatures() {
                         <span className="text-emerald-400 font-mono font-bold">{selectedSkills.length} active</span>
                       </div>
 
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                         {availableSkills.map((skill) => {
                           const isSelected = selectedSkills.includes(skill.name);
                           return (
                             <button
                               key={skill.name}
                               onClick={() => toggleSkill(skill.name)}
-                              className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between border ${
+                              className={`px-3 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border min-w-0 ${
                                 isSelected
-                                  ? 'bg-emerald-500/20 border-emerald-500/80 text-emerald-300 shadow-md shadow-emerald-500/20 scale-[1.02]'
+                                  ? 'bg-emerald-500/20 border-emerald-500/80 text-emerald-300 shadow-md shadow-emerald-500/20'
                                   : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-white'
                               }`}
                             >
-                              <span className="truncate">{skill.name}</span>
+                              <span className="truncate text-left">{skill.name}</span>
                               {isSelected ? (
-                                <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                                <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1" />
                               ) : (
-                                <Plus className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                                <Plus className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1" />
                               )}
                             </button>
                           );
@@ -398,11 +398,11 @@ export function AdvancedFeatures() {
                     <Button
                       variant="noise"
                       size="md"
-                      className="font-bold text-xs gap-2 shadow-lg shadow-brand-500/25"
+                      className="font-bold text-sm px-6 py-3 w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25"
                       onClick={() => openAuthModal('signup')}
                     >
-                      <span>Interact with Agent in Dashboard</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <span>Interact with AI Career Agent</span>
+                      <ArrowRight className="w-4 h-4 shrink-0" />
                     </Button>
                   </div>
                 </div>
@@ -429,14 +429,14 @@ export function AdvancedFeatures() {
                     {/* Sample Query Buttons */}
                     <div className="space-y-2">
                       <span className="text-xs text-slate-400 font-mono">Select candidate inquiry:</span>
-                      <div className="grid grid-cols-1 gap-1.5">
+                      <div className="grid grid-cols-1 gap-2">
                         {agentQueries.map((q, idx) => (
                           <button
                             key={idx}
                             onClick={() => setAgentQuery(idx)}
-                            className={`p-2.5 rounded-xl text-left text-xs transition-all border ${
+                            className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm leading-relaxed transition-all border break-words ${
                               agentQuery === idx
-                                ? 'bg-brand-500/20 text-white border-brand-500 font-bold shadow-sm shadow-brand-500/20'
+                                ? 'bg-brand-500/20 text-white border-brand-500 font-semibold shadow-sm shadow-brand-500/20'
                                 : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-slate-200'
                             }`}
                           >
@@ -534,11 +534,11 @@ export function AdvancedFeatures() {
                     <Button
                       variant="noise"
                       size="md"
-                      className="font-bold text-xs gap-2 shadow-lg shadow-brand-500/25"
+                      className="font-bold text-sm px-6 py-3 w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25"
                       onClick={() => openAuthModal('signup')}
                     >
-                      <span>Explore Your Transition Graph</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <span>Explore Role Pathway Graph</span>
+                      <ArrowRight className="w-4 h-4 shrink-0" />
                     </Button>
                   </div>
                 </div>
@@ -577,9 +577,9 @@ export function AdvancedFeatures() {
                       </div>
 
                       {/* Transition Vector Connector */}
-                      <div className="flex items-center justify-center">
-                        <div className="px-4 py-1.5 rounded-full bg-indigo-950/90 border border-indigo-700/80 text-[11px] font-mono text-indigo-300 flex items-center gap-2 shadow-lg shadow-indigo-950/60">
-                          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                      <div className="flex items-center justify-center py-1">
+                        <div className="max-w-full px-4 py-2 rounded-full bg-indigo-950/90 border border-indigo-700/80 text-[11px] sm:text-xs font-mono text-indigo-300 flex items-center justify-center gap-2 shadow-lg shadow-indigo-950/60 text-center leading-snug">
+                          <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                           <span>Bridge: Qdrant Vectors + Triton Inference (+26% Match)</span>
                         </div>
                       </div>
@@ -600,6 +600,7 @@ export function AdvancedFeatures() {
                       </div>
 
                     </div>
+
 
                     {/* Transition ROI Summary */}
                     <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
