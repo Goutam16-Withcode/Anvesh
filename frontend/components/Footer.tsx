@@ -39,6 +39,7 @@ import { AceternityInput, BottomGradient } from './ui/signup-form';
 import { TextHoverEffect } from './ui/text-hover-effect';
 import { BackgroundBeams } from './ui/background-beams';
 import { FloatingDock, FloatingDockItem } from './ui/floating-dock';
+import { AnveshBrandLockup } from './ui/anvesh-logo';
 
 type ModalType = 'privacy' | 'gdpr' | 'terms' | 'api' | 'status' | 'security' | null;
 
@@ -145,23 +146,8 @@ export function Footer() {
           
           {/* Column 1: ANVESH Identity & System Verification */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-brand-500/25 group-hover:scale-105 transition-transform">
-                <Compass className="w-5 h-5 animate-pulse-subtle" />
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-xl tracking-tight text-white">
-                    ANVESH
-                  </span>
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-brand-950 text-brand-300 border border-brand-700/60">
-                    अन्वेष
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-400 font-medium">
-                  Autonomous Career Intelligence
-                </span>
-              </div>
+            <Link href="/" className="focus:outline-none inline-block">
+              <AnveshBrandLockup size="md" />
             </Link>
 
             <p className="text-xs text-slate-400 leading-relaxed">

@@ -26,6 +26,7 @@ import { Button } from './ui/button';
 import { Menu, MenuItem, ProductItem, HoveredLink } from './ui/navbar-menu';
 import { ResizableFloatingNavbar } from './ui/floating-navbar';
 import { useAuth } from '@/lib/auth-context';
+import { AnveshBrandLockup } from './ui/anvesh-logo';
 
 export function Navbar() {
   const [active, setActive] = useState<string | null>(null);
@@ -35,21 +36,9 @@ export function Navbar() {
   return (
     <>
       <ResizableFloatingNavbar>
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
-            <Compass className="w-5 h-5 animate-pulse-subtle" />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-lg tracking-tight text-slate-900">
-                ANVESH
-              </span>
-              <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-brand-50 text-brand-700 border border-brand-200/60">
-                अन्वेष
-              </span>
-            </div>
-          </div>
+        {/* Bespoke ANVESH Brand Lockup Logo */}
+        <Link href="/" className="focus:outline-none shrink-0">
+          <AnveshBrandLockup size="sm" />
         </Link>
 
         {/* Aceternity UI Floating Navbar Menu (Desktop) */}
