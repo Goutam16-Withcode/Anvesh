@@ -44,36 +44,36 @@ export function Navbar() {
         {/* Aceternity UI Floating Navbar Menu (Desktop) */}
         <div className="hidden lg:flex items-center justify-center">
           <Menu setActive={setActive}>
-            {/* Menu Item 1: Platform */}
-            <MenuItem setActive={setActive} active={active} item="Platform">
-              <div className="grid grid-cols-2 gap-3 w-[460px]">
+            {/* Menu Item 1: Jobs & Platform */}
+            <MenuItem setActive={setActive} active={active} item="Discovery">
+              <div className="grid grid-cols-2 gap-3 w-[480px]">
+                <ProductItem
+                  title="Live Jobs Catalog"
+                  description="Explore 100k+ AI & Systems positions with 384-d semantic search"
+                  href="/jobs"
+                  icon={<Search className="w-4 h-4 text-brand-600" />}
+                  badge="100k+ Live"
+                />
+                <ProductItem
+                  title="What-If Simulation Suite"
+                  description="Simulate prospective skill acquisition & salary lift"
+                  href="/what-if"
+                  icon={<TrendingUp className="w-4 h-4 text-emerald-600" />}
+                  badge="+52.8%"
+                />
                 <ProductItem
                   title="Deterministic Parser"
                   description="Extracts verified experience without LLM hallucinations"
-                  href="#platform"
-                  icon={<FileText className="w-4 h-4" />}
+                  href="/#platform"
+                  icon={<FileText className="w-4 h-4 text-slate-700" />}
                   badge="Stage 1"
                 />
                 <ProductItem
                   title="Canonical Skill Graph"
                   description="Standardized taxonomy normalization across variants"
-                  href="#features"
-                  icon={<GitGraph className="w-4 h-4" />}
+                  href="/#features"
+                  icon={<GitGraph className="w-4 h-4 text-indigo-600" />}
                   badge="Graph DB"
-                />
-                <ProductItem
-                  title="Qdrant Vector Retrieval"
-                  description="Dense 384-d cosine similarity search across 100k+ catalog"
-                  href="#features"
-                  icon={<Search className="w-4 h-4" />}
-                  badge="HNSW"
-                />
-                <ProductItem
-                  title="LightGBM LambdaMART"
-                  description="Pairwise Learning-to-Rank optimizing NDCG@10"
-                  href="#features"
-                  icon={<Cpu className="w-4 h-4" />}
-                  badge="Ranker"
                 />
               </div>
             </MenuItem>
@@ -82,29 +82,29 @@ export function Navbar() {
             <MenuItem setActive={setActive} active={active} item="Capabilities">
               <div className="grid grid-cols-2 gap-3 w-[480px]">
                 <ProductItem
-                  title="What-If Simulation"
-                  description="Simulate prospective skill acquisition & salary lift"
-                  href="#advanced"
+                  title="What-If Simulation Studio"
+                  description="Interactive sandbox to project career ROI and trajectory"
+                  href="/what-if"
                   icon={<TrendingUp className="w-4 h-4 text-emerald-600" />}
-                  badge="+52.8%"
+                  badge="Interactive"
                 />
                 <ProductItem
                   title="Autonomous Career Agent"
                   description="Tool-orchestrated LangChain assistant with verified traces"
-                  href="#advanced"
+                  href="/dashboard"
                   icon={<Terminal className="w-4 h-4 text-brand-600" />}
                   badge="Tools"
                 />
                 <ProductItem
                   title="Role Transition Pathways"
                   description="Shortest mathematical graph transitions to target roles"
-                  href="#advanced"
+                  href="/what-if"
                   icon={<Route className="w-4 h-4 text-indigo-600" />}
                 />
                 <ProductItem
                   title="MMR Diversity Engine"
                   description="Maximal Marginal Relevance with freshness decay scoring"
-                  href="#features"
+                  href="/jobs"
                   icon={<Layers className="w-4 h-4 text-cyan-600" />}
                 />
               </div>
@@ -113,19 +113,27 @@ export function Navbar() {
             {/* Menu Item 3: Showcase & Security */}
             <MenuItem setActive={setActive} active={active} item="Showcase & Security">
               <div className="flex flex-col space-y-2 w-[240px] p-1">
-                <HoveredLink href="#showcase" className="flex items-center gap-2">
-                  <Activity className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Live Interactive Sandbox</span>
+                <HoveredLink href="/jobs" className="flex items-center gap-2">
+                  <Search className="w-3.5 h-3.5 text-brand-600" />
+                  <span>Browse Jobs Catalog</span>
                 </HoveredLink>
-                <HoveredLink href="#how-it-works" className="flex items-center gap-2">
+                <HoveredLink href="/what-if" className="flex items-center gap-2">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>What-If Sandbox Studio</span>
+                </HoveredLink>
+                <HoveredLink href="/#showcase" className="flex items-center gap-2">
+                  <Activity className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Live Sandbox Demo</span>
+                </HoveredLink>
+                <HoveredLink href="/#how-it-works" className="flex items-center gap-2">
                   <Compass className="w-3.5 h-3.5 text-brand-600" />
                   <span>4-Step Workflow Timeline</span>
                 </HoveredLink>
-                <HoveredLink href="#security" className="flex items-center gap-2">
+                <HoveredLink href="/#security" className="flex items-center gap-2">
                   <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
                   <span>Enterprise Security & RBAC</span>
                 </HoveredLink>
-                <HoveredLink href="#faq" className="flex items-center gap-2">
+                <HoveredLink href="/#faq" className="flex items-center gap-2">
                   <HelpCircle className="w-3.5 h-3.5 text-slate-500" />
                   <span>Frequently Asked Questions</span>
                 </HoveredLink>
@@ -200,50 +208,66 @@ export function Navbar() {
       {mobileMenuOpen && (
         <div className="fixed top-20 inset-x-4 z-50 lg:hidden bg-white/95 backdrop-blur-xl border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl animate-fadeIn">
           <div className="flex flex-col space-y-3">
+            <Link
+              href="/jobs"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors flex items-center justify-between"
+            >
+              <span>Explore Jobs Catalog</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">100k+</span>
+            </Link>
+            <Link
+              href="/what-if"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors flex items-center justify-between"
+            >
+              <span>What-If Simulation Studio</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Live ROI</span>
+            </Link>
             <a
-              href="#platform"
+              href="/#platform"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
               Platform Overview
             </a>
             <a
-              href="#features"
+              href="/#features"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
               Core Hybrid Features
             </a>
             <a
-              href="#advanced"
+              href="/#advanced"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
               What-If & AI Agent
             </a>
             <a
-              href="#showcase"
+              href="/#showcase"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
               Live Showcase Sandbox
             </a>
             <a
-              href="#how-it-works"
+              href="/#how-it-works"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
               How It Works
             </a>
             <a
-              href="#security"
+              href="/#security"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
               Security & Privacy
             </a>
             <a
-              href="#faq"
+              href="/#faq"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
             >
