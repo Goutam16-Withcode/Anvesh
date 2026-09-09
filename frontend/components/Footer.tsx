@@ -305,29 +305,29 @@ export function Footer() {
                 href: '/',
               },
               {
-                title: 'Manifesto',
-                icon: <Compass className="w-full h-full text-brand-400" />,
-                href: '#platform',
-              },
-              {
-                title: 'Skill Graph',
-                icon: <Layers className="w-full h-full text-indigo-400" />,
-                href: '#features',
+                title: 'Jobs Catalog',
+                icon: <Briefcase className="w-full h-full text-brand-400" />,
+                href: '/jobs',
               },
               {
                 title: 'What-If Engine',
                 icon: <TrendingUp className="w-full h-full text-emerald-400" />,
-                href: '#advanced',
+                href: '/what-if',
+              },
+              {
+                title: 'Skill Graph',
+                icon: <Layers className="w-full h-full text-indigo-400" />,
+                href: '/#features',
               },
               {
                 title: 'AI Agent',
                 icon: <Terminal className="w-full h-full text-cyan-400" />,
-                href: '#advanced',
+                href: '/dashboard',
               },
               {
                 title: 'Live Sandbox',
                 icon: <Activity className="w-full h-full text-amber-400" />,
-                href: '#showcase',
+                href: '/#showcase',
               },
               {
                 title: 'Security PGP',
