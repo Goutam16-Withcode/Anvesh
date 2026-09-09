@@ -6,6 +6,7 @@ export interface AnveshLogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
   className?: string;
   animate?: boolean;
+  withGlow?: boolean;
   variant?: 'brand' | 'sunset' | 'cyan' | 'monochrome';
 }
 
