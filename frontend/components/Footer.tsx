@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Compass,
   Home,
+  Briefcase,
   Github,
   Twitter,
   Linkedin,
