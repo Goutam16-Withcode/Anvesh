@@ -28,6 +28,7 @@ import {
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { useAuth } from '@/lib/auth-context';
+import { formatNumber } from '@/lib/utils';
 
 // Engineering-grade Developer Agent Execution Core Icon
 function AgentIcon({ className = 'w-4 h-4' }: { className?: string }) {
@@ -310,7 +311,7 @@ export function AdvancedFeatures() {
 
                       <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1">
                         <span className="text-[10px] text-slate-400 uppercase font-mono font-bold block">Salary Delta</span>
-                        <span className="text-2xl font-extrabold text-indigo-300 font-mono">+${salaryLift.toLocaleString()}</span>
+                        <span className="text-2xl font-extrabold text-indigo-300 font-mono">+${formatNumber(salaryLift)}</span>
                         <span className="text-[10px] text-slate-500 block">Annual Median</span>
                       </div>
 

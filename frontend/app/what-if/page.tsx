@@ -34,6 +34,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { api, WhatIfResult, TrajectoryPoint, LearningStep, Job } from '@/lib/api';
+import { formatNumber } from '@/lib/utils';
 
 interface SkillCategory {
   name: string;
@@ -348,10 +349,10 @@ export default function WhatIfPage() {
                 </span>
               </div>
               <div className="text-3xl font-black text-indigo-600 font-mono">
-                +${simulationData.salary_delta.toLocaleString()}
+                +${formatNumber(simulationData.salary_delta)}
               </div>
               <div className="text-xs text-slate-500 font-medium">
-                Projected: <strong className="text-slate-900 font-mono">${simulationData.simulated_median_salary.toLocaleString()}</strong> / year
+                Projected: <strong className="text-slate-900 font-mono">${formatNumber(simulationData.simulated_median_salary)}</strong> / year
               </div>
             </div>
 
@@ -425,10 +426,10 @@ export default function WhatIfPage() {
                         <span className="font-extrabold text-slate-900">{pt.period}</span>
                         <div className="flex items-center gap-3">
                           <span className="text-slate-500">
-                            Pool: <strong className="text-slate-800 font-mono">{pt.unlockedOpportunities} roles</strong>
+                            Pool: <strong className="text-slate-800 font-mono">{formatNumber(pt.unlockedOpportunities)} roles</strong>
                           </span>
                           <span className="font-mono font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
-                            ${pt.simulated.toLocaleString()} / yr
+                            ${formatNumber(pt.simulated)} / yr
                           </span>
                         </div>
                       </div>

@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { api, Recommendation, WhatIfResult } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
+import { formatNumber } from '@/lib/utils';
 
 export function ProductShowcase() {
   const { openAuthModal } = useAuth();
@@ -134,7 +135,7 @@ export function ProductShowcase() {
                             </Badge>
                           </div>
                           <p className="text-xs text-slate-500">
-                            {job.company.name} &bull; {job.company.location} &bull; ${job.min_salary.toLocaleString()} - ${job.max_salary.toLocaleString()} {job.currency}
+                            {job.company.name} &bull; {job.company.location} &bull; ${formatNumber(job.min_salary)} - ${formatNumber(job.max_salary)} {job.currency}
                           </p>
                         </div>
                       </div>
@@ -245,10 +246,10 @@ export function ProductShowcase() {
                       <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-100">
                         <span className="text-[11px] text-indigo-800 block font-medium">Projected Salary Lift</span>
                         <span className="text-xl font-bold text-indigo-700 font-mono">
-                          +${simulationResult.simulation.salary_delta.toLocaleString()}
+                          +${formatNumber(simulationResult.simulation.salary_delta)}
                         </span>
                         <span className="text-[10px] text-indigo-600 block mt-0.5">
-                          New Median: ${simulationResult.simulation.simulated_median_salary.toLocaleString()}
+                          New Median: ${formatNumber(simulationResult.simulation.simulated_median_salary)}
                         </span>
                       </div>
                     </div>

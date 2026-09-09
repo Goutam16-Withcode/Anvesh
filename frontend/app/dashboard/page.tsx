@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { AnveshBrandLockup } from '@/components/ui/anvesh-logo';
 import { useAuth } from '@/lib/auth-context';
 import { api, Recommendation, WhatIfResult } from '@/lib/api';
+import { formatNumber } from '@/lib/utils';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -182,7 +183,7 @@ export default function DashboardPage() {
                           </Badge>
                         </div>
                         <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                          {job.company.name} &bull; {job.company.location} &bull; ${job.min_salary.toLocaleString()} - ${job.max_salary.toLocaleString()} {job.currency}
+                          {job.company.name} &bull; {job.company.location} &bull; ${formatNumber(job.min_salary)} - ${formatNumber(job.max_salary)} {job.currency}
                         </p>
                       </div>
                     </div>
@@ -279,10 +280,10 @@ export default function DashboardPage() {
                   <div className="p-3 rounded-xl bg-indigo-50 border border-indigo-100">
                     <span className="text-[10px] text-indigo-800 block font-medium">Median Salary Lift</span>
                     <span className="text-lg font-bold text-indigo-700 font-mono">
-                      +${simulation.simulation.salary_delta.toLocaleString()}
+                      +${formatNumber(simulation.simulation.salary_delta)}
                     </span>
                     <span className="text-[10px] text-indigo-600 block">
-                      Target: ${simulation.simulation.simulated_median_salary.toLocaleString()}
+                      Target: ${formatNumber(simulation.simulation.simulated_median_salary)}
                     </span>
                   </div>
                 </div>

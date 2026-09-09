@@ -36,6 +36,7 @@ import { Badge } from '@/components/ui/badge';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { api, Job, MOCK_JOBS_CATALOG } from '@/lib/api';
+import { formatNumber } from '@/lib/utils';
 
 const CANONICAL_FILTER_SKILLS = [
   'Python',
@@ -550,7 +551,7 @@ export default function JobsPage() {
                             </span>
                             <span>&bull;</span>
                             <span className="font-mono font-bold text-emerald-700">
-                              ${job.min_salary.toLocaleString()} - ${job.max_salary.toLocaleString()} {job.currency}
+                              ${formatNumber(job.min_salary)} - ${formatNumber(job.max_salary)} {job.currency}
                             </span>
                             <span>&bull;</span>
                             <Badge variant="slate" className="text-[10px] font-bold">
@@ -699,7 +700,7 @@ export default function JobsPage() {
 
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 <span className="px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 font-mono font-bold text-sm border border-emerald-200">
-                  ${selectedJob.min_salary.toLocaleString()} - ${selectedJob.max_salary.toLocaleString()} {selectedJob.currency} / year
+                  ${formatNumber(selectedJob.min_salary)} - ${formatNumber(selectedJob.max_salary)} {selectedJob.currency} / year
                 </span>
                 <Badge variant="brand">{selectedJob.experience_level} Tier ({selectedJob.experience_years_range[0]}-{selectedJob.experience_years_range[1]} yrs exp)</Badge>
                 <Badge variant="slate">{selectedJob.category}</Badge>
