@@ -104,19 +104,59 @@ export default function DashboardPage() {
             </span>
           </div>
 
+          <div className="hidden md:flex items-center gap-1">
+            <Link
+              href="/jobs"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-1.5"
+            >
+              <Briefcase className="w-3.5 h-3.5 text-brand-600" />
+              <span>Jobs Catalog</span>
+            </Link>
+            <Link
+              href="/what-if"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors flex items-center gap-1.5"
+            >
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+              <span>What-If Suite</span>
+            </Link>
+            <Link
+              href="/skill-gap"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center gap-1.5"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Skill Gap Radar</span>
+            </Link>
+            <Link
+              href="/career-path"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center gap-1.5"
+            >
+              <Layers className="w-3.5 h-3.5 text-cyan-600" />
+              <span>Career Trajectory</span>
+            </Link>
+            <Link
+              href="/profile"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-purple-600 hover:bg-purple-50 transition-colors flex items-center gap-1.5"
+            >
+              <User className="w-3.5 h-3.5 text-purple-600" />
+              <span>My Profile</span>
+            </Link>
+          </div>
+
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center border border-brand-200">
-                {user?.photo_url ? (
-                  <img src={user.photo_url} alt={user.full_name} className="w-full h-full object-cover rounded-full" />
-                ) : (
-                  user?.full_name?.charAt(0) || 'U'
-                )}
-              </div>
-              <div className="hidden sm:block text-left">
-                <div className="text-xs font-bold text-slate-900">{user?.full_name || 'Candidate User'}</div>
-                <div className="text-[10px] text-slate-500">{user?.email || 'demo@anvesh.ai'}</div>
-              </div>
+              <Link href="/profile" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+                <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center border border-brand-200">
+                  {user?.photo_url ? (
+                    <img src={user.photo_url} alt={user.full_name} className="w-full h-full object-cover rounded-full" />
+                  ) : (
+                    user?.full_name?.charAt(0) || 'U'
+                  )}
+                </div>
+                <div className="hidden sm:block text-left">
+                  <div className="text-xs font-bold text-slate-900">{user?.full_name || 'Candidate User'}</div>
+                  <div className="text-[10px] text-slate-500">{user?.email || 'demo@anvesh.ai'}</div>
+                </div>
+              </Link>
             </div>
 
             <Button variant="outline" size="sm" onClick={handleLogout} className="text-xs text-red-600 hover:text-red-700">
@@ -149,6 +189,61 @@ export default function DashboardPage() {
             <Badge variant="emerald">LightGBM</Badge>
             <Badge variant="slate">Docker</Badge>
           </div>
+        </div>
+
+        {/* Quick Discovery Navigation Hub */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
+            href="/jobs"
+            className="group p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-brand-500 hover:shadow-card transition-all flex items-center gap-3.5"
+          >
+            <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <Briefcase className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Jobs Catalog</h4>
+              <p className="text-[11px] text-slate-500">16+ Verified Portals</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/what-if"
+            className="group p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-500 hover:shadow-card transition-all flex items-center gap-3.5"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">What-If Suite</h4>
+              <p className="text-[11px] text-slate-500">ROI & Salary Lift</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/skill-gap"
+            className="group p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-indigo-500 hover:shadow-card transition-all flex items-center gap-3.5"
+          >
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Skill Gap Radar</h4>
+              <p className="text-[11px] text-slate-500">Vector Competency Map</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/career-path"
+            className="group p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-cyan-500 hover:shadow-card transition-all flex items-center gap-3.5"
+          >
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <Layers className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 group-hover:text-cyan-600 transition-colors">Career Trajectory</h4>
+              <p className="text-[11px] text-slate-500">IC vs Mgmt Graph</p>
+            </div>
+          </Link>
         </div>
 
         {/* 2-Column Grid: Recommendations + What-If Simulator & AI Agent */}

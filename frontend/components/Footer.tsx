@@ -34,6 +34,8 @@ import {
   Copy,
   AlertCircle,
   TrendingUp,
+  Route,
+  User,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { AceternityInput, BottomGradient } from './ui/signup-form';
@@ -316,19 +318,24 @@ export function Footer() {
                 href: '/what-if',
               },
               {
-                title: 'Skill Graph',
+                title: 'Skill Gap',
                 icon: <Layers className="w-full h-full text-indigo-400" />,
-                href: '/#features',
+                href: '/skill-gap',
+              },
+              {
+                title: 'Career Path',
+                icon: <Route className="w-full h-full text-cyan-400" />,
+                href: '/career-path',
+              },
+              {
+                title: 'Profile',
+                icon: <User className="w-full h-full text-slate-300" />,
+                href: '/profile',
               },
               {
                 title: 'AI Agent',
-                icon: <Terminal className="w-full h-full text-cyan-400" />,
+                icon: <Terminal className="w-full h-full text-amber-400" />,
                 href: '/dashboard',
-              },
-              {
-                title: 'Live Sandbox',
-                icon: <Activity className="w-full h-full text-amber-400" />,
-                href: '/#showcase',
               },
               {
                 title: 'Security PGP',

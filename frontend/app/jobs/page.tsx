@@ -35,8 +35,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { BackgroundBeams } from '@/components/ui/background-beams';
-import { api, Job, MOCK_JOBS_CATALOG } from '@/lib/api';
-import { formatNumber } from '@/lib/utils';
+import { api, Job, MOCK_JOBS_CATALOG, CandidateProfile, MOCK_CANDIDATE_PROFILE } from '@/lib/api';
+import { rankJobsForCandidate } from '@/lib/matching';
+import { formatNumber, formatSalary } from '@/lib/utils';
 
 const CANONICAL_FILTER_SKILLS = [
   'Python',
@@ -53,9 +54,13 @@ const CANONICAL_FILTER_SKILLS = [
   'React',
   'Rust',
   'MLflow',
+  'C++',
+  'Go',
+  'PostgreSQL',
 ];
 
 export default function JobsPage() {
+  const [candidateProfile, setCandidateProfile] = useState<CandidateProfile>(MOCK_CANDIDATE_PROFILE);
   const [jobs, setJobs] = useState<Job[]>(MOCK_JOBS_CATALOG);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,28 +69,55 @@ export default function JobsPage() {
   const [minSalaryFilter, setMinSalaryFilter] = useState<number>(0);
   const [matchScoreFilter, setMatchScoreFilter] = useState<number>(0);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'match_score' | 'salary_desc' | 'semantic' | 'freshness'>('match_score');
   const [savedJobIds, setSavedJobIds] = useState<string[]>([]);
+  const [appliedJobIds, setAppliedJobIds] = useState<string[]>([]);
+  const [isApplying, setIsApplying] = useState(false);
+  const [applySuccess, setApplySuccess] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
   useEffect(() => {
-    loadJobs();
+    loadProfileAndJobs();
   }, []);
 
-  const loadJobs = async () => {
+  const loadProfileAndJobs = async () => {
     setIsLoading(true);
+    let skillsList: string[] = MOCK_CANDIDATE_PROFILE.skills.map((s) => s.name);
+
     try {
-      const res = await api.getRecommendations();
-      if (res.recommendations && res.recommendations.length > 0) {
-        setJobs(res.recommendations);
+      const stored = localStorage.getItem('anvesh_profile');
+      if (stored) {
+        const parsed: CandidateProfile = JSON.parse(stored);
+        if (parsed && parsed.skills && parsed.skills.length > 0) {
+          setCandidateProfile(parsed);
+          skillsList = parsed.skills.map((s) => s.name);
+        }
+      } else {
+        setCandidateProfile(MOCK_CANDIDATE_PROFILE);
       }
+
+      // Dynamically score and rank catalog against candidate's real resume skills
+      const dynamicallyRanked = rankJobsForCandidate(MOCK_JOBS_CATALOG, skillsList);
+      setJobs(dynamicallyRanked);
     } catch (e) {
       console.warn('Using local catalog fallback', e);
+      setJobs(MOCK_JOBS_CATALOG);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleQuickApply = (jobId: string) => {
+    setIsApplying(true);
+    setTimeout(() => {
+      setIsApplying(false);
+      setApplySuccess(true);
+      setAppliedJobIds((prev) => Array.from(new Set([...prev, jobId])));
+      setTimeout(() => setApplySuccess(false), 4000);
+    }, 900);
   };
 
   const handleToggleSkill = (skill: string) => {
@@ -298,6 +330,36 @@ export default function JobsPage() {
                 </button>
               );
             })}
+          </div>
+
+          {/* Real-Time Resume Personalization Status Banner */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-50/90 via-indigo-50/70 to-emerald-50/80 border border-brand-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-bold text-slate-900">
+                    Live Match Engine Calibrated for {candidateProfile.fullName}
+                  </span>
+                  <Badge variant="outline" className="bg-white/80 text-brand-700 border-brand-300 text-[10px] font-mono">
+                    {candidateProfile.skills.length} Verified Skills Active
+                  </Badge>
+                </div>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Job match scores, matched skills, and missing skill badges are computed dynamically against your uploaded resume.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+              <Link href="/profile">
+                <Button variant="outline" size="sm" className="text-xs h-8 font-semibold bg-white">
+                  Update Resume
+                </Button>
+              </Link>
+            </div>
           </div>
 
         </div>
@@ -808,25 +870,53 @@ export default function JobsPage() {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-100">
               <Button variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
                 Close
               </Button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={(e) => handleToggleSave(selectedJob.id, e)}
-                  className="gap-1.5"
+                  className="gap-1.5 text-xs"
                 >
                   <Bookmark className="w-3.5 h-3.5" />
                   <span>{savedJobIds.includes(selectedJob.id) ? 'Saved' : 'Save'}</span>
                 </Button>
 
-                <a href={selectedJob.apply_url} target="_blank" rel="noreferrer">
-                  <Button variant="noise" size="sm" className="gap-1.5 font-bold">
-                    <span>Apply on Official Portal</span>
+                {/* 1-Click Apply with ANVESH AST Profile */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isApplying || appliedJobIds.includes(selectedJob.id)}
+                  onClick={() => handleQuickApply(selectedJob.id)}
+                  className={`gap-1.5 text-xs font-bold ${
+                    appliedJobIds.includes(selectedJob.id)
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                      : 'border-brand-300 text-brand-700 hover:bg-brand-50'
+                  }`}
+                >
+                  {isApplying ? (
+                    <span>Submitting Profile...</span>
+                  ) : appliedJobIds.includes(selectedJob.id) ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Applied with AST!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+                      <span>1-Click Apply with AST</span>
+                    </>
+                  )}
+                </Button>
+
+                {/* Direct Official Company Career Portal Apply Link */}
+                <a href={selectedJob.apply_url} target="_blank" rel="noreferrer" className="shrink-0">
+                  <Button variant="noise" size="sm" className="gap-1.5 font-bold text-xs">
+                    <span>Apply on {selectedJob.company.name} Portal</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </Button>
                 </a>

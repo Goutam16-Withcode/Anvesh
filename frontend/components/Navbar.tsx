@@ -44,7 +44,7 @@ export function Navbar() {
         {/* Aceternity UI Floating Navbar Menu (Desktop) */}
         <div className="hidden lg:flex items-center justify-center">
           <Menu setActive={setActive}>
-            {/* Menu Item 1: Jobs & Platform */}
+            {/* Menu Item 1: Discovery */}
             <MenuItem setActive={setActive} active={active} item="Discovery">
               <div className="grid grid-cols-2 gap-3 w-[480px]">
                 <ProductItem
@@ -62,17 +62,17 @@ export function Navbar() {
                   badge="+52.8%"
                 />
                 <ProductItem
-                  title="Deterministic Parser"
-                  description="Extracts verified experience without LLM hallucinations"
-                  href="/#platform"
-                  icon={<FileText className="w-4 h-4 text-slate-700" />}
-                  badge="Stage 1"
+                  title="Skill Gap Analyzer"
+                  description="Deterministic vector distance & missing skills radar"
+                  href="/skill-gap"
+                  icon={<GitGraph className="w-4 h-4 text-indigo-600" />}
+                  badge="Radar"
                 />
                 <ProductItem
-                  title="Canonical Skill Graph"
-                  description="Standardized taxonomy normalization across variants"
-                  href="/#features"
-                  icon={<GitGraph className="w-4 h-4 text-indigo-600" />}
+                  title="Career Path Visualization"
+                  description="Shortest mathematical graph transitions to target roles"
+                  href="/career-path"
+                  icon={<Route className="w-4 h-4 text-cyan-600" />}
                   badge="Graph DB"
                 />
               </div>
@@ -82,11 +82,11 @@ export function Navbar() {
             <MenuItem setActive={setActive} active={active} item="Capabilities">
               <div className="grid grid-cols-2 gap-3 w-[480px]">
                 <ProductItem
-                  title="What-If Simulation Studio"
-                  description="Interactive sandbox to project career ROI and trajectory"
-                  href="/what-if"
-                  icon={<TrendingUp className="w-4 h-4 text-emerald-600" />}
-                  badge="Interactive"
+                  title="Candidate Profile & Resume"
+                  description="Deterministic AST parser with verified skill manager"
+                  href="/profile"
+                  icon={<FileText className="w-4 h-4 text-slate-700" />}
+                  badge="Profile"
                 />
                 <ProductItem
                   title="Autonomous Career Agent"
@@ -96,10 +96,10 @@ export function Navbar() {
                   badge="Tools"
                 />
                 <ProductItem
-                  title="Role Transition Pathways"
-                  description="Shortest mathematical graph transitions to target roles"
-                  href="/what-if"
-                  icon={<Route className="w-4 h-4 text-indigo-600" />}
+                  title="Skill Gap Radar Chart"
+                  description="Prioritized learning resources and competency matrices"
+                  href="/skill-gap"
+                  icon={<Activity className="w-4 h-4 text-emerald-600" />}
                 />
                 <ProductItem
                   title="MMR Diversity Engine"
@@ -121,21 +121,21 @@ export function Navbar() {
                   <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
                   <span>What-If Sandbox Studio</span>
                 </HoveredLink>
-                <HoveredLink href="/#showcase" className="flex items-center gap-2">
-                  <Activity className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Live Sandbox Demo</span>
+                <HoveredLink href="/skill-gap" className="flex items-center gap-2">
+                  <GitGraph className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Skill Gap Analyzer</span>
                 </HoveredLink>
-                <HoveredLink href="/#how-it-works" className="flex items-center gap-2">
-                  <Compass className="w-3.5 h-3.5 text-brand-600" />
-                  <span>4-Step Workflow Timeline</span>
+                <HoveredLink href="/career-path" className="flex items-center gap-2">
+                  <Route className="w-3.5 h-3.5 text-cyan-600" />
+                  <span>Career Path Trajectory</span>
+                </HoveredLink>
+                <HoveredLink href="/profile" className="flex items-center gap-2">
+                  <User className="w-3.5 h-3.5 text-slate-700" />
+                  <span>Profile & Resume Manager</span>
                 </HoveredLink>
                 <HoveredLink href="/#security" className="flex items-center gap-2">
                   <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
                   <span>Enterprise Security & RBAC</span>
-                </HoveredLink>
-                <HoveredLink href="/#faq" className="flex items-center gap-2">
-                  <HelpCircle className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Frequently Asked Questions</span>
                 </HoveredLink>
               </div>
             </MenuItem>
@@ -224,55 +224,38 @@ export function Navbar() {
               <span>What-If Simulation Studio</span>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Live ROI</span>
             </Link>
-            <a
-              href="/#platform"
+            <Link
+              href="/skill-gap"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
+              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors flex items-center justify-between"
             >
-              Platform Overview
-            </a>
-            <a
-              href="/#features"
+              <span>Skill Gap Analyzer</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Radar</span>
+            </Link>
+            <Link
+              href="/career-path"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
+              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors flex items-center justify-between"
             >
-              Core Hybrid Features
-            </a>
-            <a
-              href="/#advanced"
+              <span>Career Path Trajectory</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200">Roadmap</span>
+            </Link>
+            <Link
+              href="/profile"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
+              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors flex items-center justify-between"
             >
-              What-If & AI Agent
-            </a>
-            <a
-              href="/#showcase"
+              <span>Candidate Profile & Resume</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">AST Parser</span>
+            </Link>
+            <Link
+              href="/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
+              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors flex items-center justify-between"
             >
-              Live Showcase Sandbox
-            </a>
-            <a
-              href="/#how-it-works"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
-            >
-              How It Works
-            </a>
-            <a
-              href="/#security"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
-            >
-              Security & Privacy
-            </a>
-            <a
-              href="/#faq"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-800 hover:text-brand-600 py-1 transition-colors"
-            >
-              FAQ
-            </a>
+              <span>Autonomous Agent Console</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">AI Agent</span>
+            </Link>
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
