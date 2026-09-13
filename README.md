@@ -288,9 +288,13 @@ anvesh/
 │   └── taxonomy/                      # Canonical skills.json & roles.json
 │
 ├── frontend/                   # Next.js 14 Web Application
-│   ├── app/                           # App Router (dashboard, jobs, what-if, profile)
-│   ├── components/                    # UI Components (SkillGraph, WhatIf, JobCard, etc.)
-│   └── lib/                           # API client & TypeScript type interfaces
+│   ├── app/                           # App Router (dashboard, jobs, what-if, profile, skill-gap, career-path)
+│   ├── components/                    # UI Components (Notifications, SkillGraph, WhatIf, JobCard, etc.)
+│   │   ├── Notifications/             # Real-time NotificationCenter popover & LiveNotificationToast
+│   │   ├── SkillGraph/                # Multi-Vector Radar & Competency Matrix
+│   │   ├── CareerGraph/               # Shortest-path DAG Trajectory visualizer
+│   │   └── ui/                        # Design system primitives & brand vectors
+│   └── lib/                           # API client, AuthContext, NotificationContext & type definitions
 │
 ├── infra/                      # Infrastructure as Code
 │   ├── docker/                        # Multi-stage Dockerfiles
@@ -353,6 +357,7 @@ gantt
 | **Skill Knowledge Graph** | NetworkX & Graph Algorithms | Graph traversal for prerequisite paths, Jaccard similarity, and role ontology expansion. |
 | **AI Agent Orchestrator** | LangChain Core | Structured tool calling with deterministic microservices; zero hallucinations. |
 | **Frontend Framework** | Next.js 14 (App Router) | Server-side rendering, React Server Components, responsive glassmorphism UI. |
+| **Real-Time Signal Hub** | React Context + Web Audio API | Live telemetry stream, tactile audio chime cues, ambient dark-glass toast notifications. |
 | **Experiment Tracking** | MLflow | Metric logging, parameter tracking, and model registry for ranking models. |
 
 ---
@@ -369,7 +374,7 @@ docker compose up -d
 - **MLflow Tracking Dashboard**: [http://localhost:5000](http://localhost:5000)
 - **PostgreSQL Database**: `localhost:5432` (`anvesh_db`)
 
-### 3. Local Environment Setup
+### 3. Local Backend Setup
 ```bash
 python -m venv .venv
 # On Windows:
@@ -379,6 +384,14 @@ python -m venv .venv
 
 pip install -r requirements.txt
 cp .env.example .env
+```
+
+### 4. Start Next.js Frontend Application
+```bash
+cd frontend
+npm install
+npm run dev
+# App will be accessible at http://localhost:3000
 ```
 
 ---
