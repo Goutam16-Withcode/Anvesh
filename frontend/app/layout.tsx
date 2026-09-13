@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 import { AuthModal } from '@/components/AuthModal';
+import { NotificationProvider } from '@/lib/notification-context';
+import { LiveNotificationToast } from '@/components/Notifications/LiveNotificationToast';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,8 +49,11 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} scroll-smooth`}>
       <body className="min-h-screen bg-white font-sans text-slate-900 antialiased selection:bg-brand-500 selection:text-white">
         <AuthProvider>
-          {children}
-          <AuthModal />
+          <NotificationProvider>
+            {children}
+            <AuthModal />
+            <LiveNotificationToast />
+          </NotificationProvider>
         </AuthProvider>
       </body>
     </html>

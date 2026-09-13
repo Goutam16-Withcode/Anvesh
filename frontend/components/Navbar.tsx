@@ -27,6 +27,7 @@ import { Menu, MenuItem, ProductItem, HoveredLink } from './ui/navbar-menu';
 import { ResizableFloatingNavbar } from './ui/floating-navbar';
 import { useAuth } from '@/lib/auth-context';
 import { AnveshBrandLockup } from './ui/anvesh-logo';
+import { NotificationCenter } from './Notifications/NotificationCenter';
 
 export function Navbar() {
   const [active, setActive] = useState<string | null>(null);
@@ -142,8 +143,11 @@ export function Navbar() {
           </Menu>
         </div>
 
-        {/* Auth & CTA Actions with Aceternity Noise Buttons */}
-        <div className="hidden sm:flex items-center gap-3 shrink-0">
+        {/* Auth & CTA Actions with Notification Center */}
+        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+          {/* Real-Time Career Intelligence Notification Center */}
+          <NotificationCenter />
+
           {user ? (
             <div className="flex items-center gap-3">
               <Link href="/dashboard">
@@ -192,8 +196,9 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Trigger */}
+        {/* Mobile Menu Trigger & Notification Bell */}
         <div className="flex lg:hidden items-center gap-2">
+          <NotificationCenter />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none"
