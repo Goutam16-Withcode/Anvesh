@@ -11,6 +11,13 @@ import { useAuth } from '@/lib/auth-context';
 import { api, Recommendation, WhatIfResult } from '@/lib/api';
 import { formatNumber } from '@/lib/utils';
 
+interface ChatMessage {
+  role: 'user' | 'agent';
+  text: string;
+  tools?: any[];
+  suggested_actions?: Array<{ label: string; action: string; param?: string }>;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -19,17 +26,31 @@ export default function DashboardPage() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>(['Kubernetes', 'Go']);
   const [simulation, setSimulation] = useState<WhatIfResult | null>(null);
   const [chatInput, setChatInput] = useState('');
-  const [messages, setMessages] = useState<Array<{ role: 'user' | 'agent'; text: string; tools?: any[] }>>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'agent',
       text: 'Hello! I am your deterministic AI Career Assistant. Ask me anything about role transitions, salary benchmarks, or required skill gaps.',
       tools: [{ tool: 'ontology_skill_graph_init', latency_ms: 8.2 }],
+      suggested_actions: [
+        { label: 'Simulate Kubernetes in What-If', action: 'OPEN_WHAT_IF', param: 'Kubernetes' },
+        { label: 'View Top NVIDIA AI Jobs', action: 'VIEW_JOB', param: 'NVIDIA' },
+        { label: 'Explore AI Engineer Skill Gap', action: 'EXPLORE_GAP', param: 'ai-platform-eng' },
+      ],
     },
   ]);
   const [isChatLoading, setIsChatLoading] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
+  }, []);
+
+  // Listen for Cross-Page Profile Updates
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      loadDashboardData();
+    };
+    window.addEventListener('anvesh_profile_updated', handleProfileUpdate);
+    return () => window.removeEventListener('anvesh_profile_updated', handleProfileUpdate);
   }, []);
 
   const loadDashboardData = async () => {
@@ -53,6 +74,18 @@ export default function DashboardPage() {
     }
   };
 
+  const handleExecuteAgentAction = (act: { label: string; action: string; param?: string }) => {
+    if (act.action === 'OPEN_WHAT_IF') {
+      router.push(`/what-if?skills=${encodeURIComponent(act.param || 'Kubernetes')}`);
+    } else if (act.action === 'VIEW_JOB' || act.action === 'FILTER_ROLE') {
+      router.push(`/jobs?query=${encodeURIComponent(act.param || '')}`);
+    } else if (act.action === 'EXPLORE_GAP') {
+      router.push(`/skill-gap?role=${encodeURIComponent(act.param || 'ai-platform-eng')}`);
+    } else {
+      router.push('/jobs');
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim() || isChatLoading) return;
@@ -70,6 +103,7 @@ export default function DashboardPage() {
           role: 'agent',
           text: res.response,
           tools: res.executed_tools,
+          suggested_actions: res.suggested_actions,
         },
       ]);
     } catch (e: any) {
@@ -78,6 +112,10 @@ export default function DashboardPage() {
         {
           role: 'agent',
           text: 'Based on your verified skills (Python, PyTorch, FastAPI), you match strongly with AI Engineer roles.',
+          suggested_actions: [
+            { label: 'Simulate Kubernetes in What-If', action: 'OPEN_WHAT_IF', param: 'Kubernetes' },
+            { label: 'View Top NVIDIA AI Jobs', action: 'VIEW_JOB', param: 'NVIDIA' },
+          ],
         },
       ]);
     } finally {
@@ -415,6 +453,21 @@ export default function DashboardPage() {
                       <div className="text-[10px] font-mono text-slate-400 space-y-0.5">
                         {m.tools.map((t, ti) => (
                           <div key={ti}>&gt; Executed: {t.tool} ({t.latency_ms || 12}ms)</div>
+                        ))}
+                      </div>
+                    )}
+
+                    {m.suggested_actions && m.suggested_actions.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-1.5">
+                        {m.suggested_actions.map((act, ai) => (
+                          <button
+                            key={ai}
+                            onClick={() => handleExecuteAgentAction(act)}
+                            className="px-2.5 py-1 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 text-[11px] font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer text-left"
+                          >
+                            <Sparkles className="w-3 h-3 text-brand-600 shrink-0" />
+                            <span>{act.label}</span>
+                          </button>
                         ))}
                       </div>
                     )}

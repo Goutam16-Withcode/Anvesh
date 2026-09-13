@@ -35,6 +35,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { BackgroundBeams } from '@/components/ui/background-beams';
+import { useSearchParams } from 'next/navigation';
 import { api, Job, MOCK_JOBS_CATALOG, CandidateProfile, MOCK_CANDIDATE_PROFILE } from '@/lib/api';
 import { rankJobsForCandidate } from '@/lib/matching';
 import { formatNumber, formatSalary } from '@/lib/utils';
@@ -59,7 +60,8 @@ const CANONICAL_FILTER_SKILLS = [
   'PostgreSQL',
 ];
 
-export default function JobsPage() {
+function JobsContent() {
+  const searchParams = useSearchParams();
   const [candidateProfile, setCandidateProfile] = useState<CandidateProfile>(MOCK_CANDIDATE_PROFILE);
   const [jobs, setJobs] = useState<Job[]>(MOCK_JOBS_CATALOG);
   const [isLoading, setIsLoading] = useState(false);
@@ -73,11 +75,62 @@ export default function JobsPage() {
   const [sortBy, setSortBy] = useState<'match_score' | 'salary_desc' | 'semantic' | 'freshness'>('match_score');
   const [savedJobIds, setSavedJobIds] = useState<string[]>([]);
   const [appliedJobIds, setAppliedJobIds] = useState<string[]>([]);
+  const [catalogTab, setCatalogTab] = useState<'all' | 'saved' | 'applied'>('all');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
   const [applySuccess, setApplySuccess] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage((prev) => (prev === msg ? null : prev));
+    }, 3500);
+  };
+
+  // Sync with URL Query Parameters
+  useEffect(() => {
+    const q = searchParams.get('query') || searchParams.get('q');
+    if (q) setSearchQuery(q);
+
+    const mode = searchParams.get('work_mode');
+    if (mode) setWorkMode(mode.toUpperCase());
+
+    const skills = searchParams.get('skills');
+    if (skills) {
+      const list = skills.split(',').map((s) => s.trim()).filter(Boolean);
+      if (list.length > 0) setSelectedSkills(list);
+    }
+
+    const tab = searchParams.get('tab');
+    if (tab === 'saved' || tab === 'applied') {
+      setCatalogTab(tab);
+    }
+  }, [searchParams]);
+
+  // Load Saved & Applied Jobs from LocalStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('anvesh_saved_jobs');
+      if (saved) setSavedJobIds(JSON.parse(saved));
+      const applied = localStorage.getItem('anvesh_applied_jobs');
+      if (applied) setAppliedJobIds(JSON.parse(applied));
+    } catch (e) {
+      console.warn('Could not load saved jobs', e);
+    }
+  }, []);
+
+  // Listen for Cross-Page Profile Updates
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      loadProfileAndJobs();
+      showToast('Catalog rankings refreshed with your updated profile skills!');
+    };
+    window.addEventListener('anvesh_profile_updated', handleProfileUpdate);
+    return () => window.removeEventListener('anvesh_profile_updated', handleProfileUpdate);
+  }, []);
 
   useEffect(() => {
     loadProfileAndJobs();
@@ -115,7 +168,12 @@ export default function JobsPage() {
     setTimeout(() => {
       setIsApplying(false);
       setApplySuccess(true);
-      setAppliedJobIds((prev) => Array.from(new Set([...prev, jobId])));
+      setAppliedJobIds((prev) => {
+        const next = Array.from(new Set([...prev, jobId]));
+        localStorage.setItem('anvesh_applied_jobs', JSON.stringify(next));
+        return next;
+      });
+      showToast('Application successfully submitted with your verified AST Profile!');
       setTimeout(() => setApplySuccess(false), 4000);
     }, 900);
   };
@@ -128,9 +186,12 @@ export default function JobsPage() {
 
   const handleToggleSave = (jobId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setSavedJobIds((prev) =>
-      prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
-    );
+    setSavedJobIds((prev) => {
+      const next = prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId];
+      localStorage.setItem('anvesh_saved_jobs', JSON.stringify(next));
+      showToast(prev.includes(jobId) ? 'Job removed from saved list' : 'Job saved to your bookmarks!');
+      return next;
+    });
   };
 
   const handleClearFilters = () => {
@@ -141,12 +202,21 @@ export default function JobsPage() {
     setMatchScoreFilter(0);
     setSelectedSkills([]);
     setSortBy('match_score');
+    setCatalogTab('all');
   };
 
   // Filtered and Sorted Jobs
   const filteredJobs = useMemo(() => {
     return jobs
       .filter((job) => {
+        // Tab Filter: All vs Saved vs Applied
+        if (catalogTab === 'saved' && !savedJobIds.includes(job.id)) {
+          return false;
+        }
+        if (catalogTab === 'applied' && !appliedJobIds.includes(job.id)) {
+          return false;
+        }
+
         // Query search
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
@@ -523,13 +593,47 @@ export default function JobsPage() {
           {/* Results Grid Column */}
           <div className="lg:col-span-9 space-y-6">
             
-            {/* Control Bar: Result Count + Sorting */}
-            <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-sm text-slate-900">
-                  {filteredJobs.length} Position{filteredJobs.length === 1 ? '' : 's'} Found
+            {/* Control Bar: Result Count + Tabs + Sorting */}
+            <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-xl border border-slate-200/80">
+                  <button
+                    onClick={() => setCatalogTab('all')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      catalogTab === 'all'
+                        ? 'bg-white text-slate-900 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    All Openings
+                  </button>
+                  <button
+                    onClick={() => setCatalogTab('saved')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+                      catalogTab === 'saved'
+                        ? 'bg-white text-brand-700 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <Bookmark className="w-3 h-3" />
+                    <span>Saved ({savedJobIds.length})</span>
+                  </button>
+                  <button
+                    onClick={() => setCatalogTab('applied')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+                      catalogTab === 'applied'
+                        ? 'bg-white text-emerald-700 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>Applied ({appliedJobIds.length})</span>
+                  </button>
+                </div>
+
+                <span className="text-xs text-slate-400 font-medium">
+                  &bull; {filteredJobs.length} shown
                 </span>
-                <span className="text-xs text-slate-400">&bull; Filtered from 104k catalog</span>
               </div>
 
               {/* Sort By Selector */}
@@ -850,7 +954,7 @@ export default function JobsPage() {
               </div>
             </div>
 
-            {/* What-If Simulation Bridge Banner */}
+            {/* What-If Simulation & Skill Gap Bridge Banner */}
             <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="space-y-1 text-center sm:text-left">
                 <div className="text-xs font-bold text-emerald-400 flex items-center justify-center sm:justify-start gap-1.5">
@@ -858,15 +962,24 @@ export default function JobsPage() {
                   <span>Simulate this Career Move</span>
                 </div>
                 <p className="text-[11px] text-slate-300">
-                  Simulate acquiring {selectedJob.missing_skills.slice(0, 2).join(' and ')} in the What-If Engine.
+                  {selectedJob.missing_skills.length > 0
+                    ? `Simulate acquiring ${selectedJob.missing_skills.slice(0, 3).join(', ')} in the What-If Engine.`
+                    : 'Simulate advancing into higher seniority tiers with our counterfactual simulator.'}
                 </p>
               </div>
 
-              <Link href="/what-if">
-                <Button size="sm" variant="noise" className="text-xs font-bold shrink-0">
-                  Launch Simulator
-                </Button>
-              </Link>
+              <div className="flex items-center gap-2 shrink-0">
+                <Link href={`/skill-gap?role=${encodeURIComponent(selectedJob.title)}`}>
+                  <Button size="sm" variant="outline" className="text-xs font-bold bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700 hover:text-white">
+                    Analyze Skill Gap
+                  </Button>
+                </Link>
+                <Link href={`/what-if?skills=${encodeURIComponent(selectedJob.missing_skills.join(','))}`}>
+                  <Button size="sm" variant="noise" className="text-xs font-bold">
+                    Launch Simulator
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Modal Actions */}
@@ -882,7 +995,7 @@ export default function JobsPage() {
                   onClick={(e) => handleToggleSave(selectedJob.id, e)}
                   className="gap-1.5 text-xs"
                 >
-                  <Bookmark className="w-3.5 h-3.5" />
+                  <Bookmark className={`w-3.5 h-3.5 ${savedJobIds.includes(selectedJob.id) ? 'fill-brand-600 text-brand-600' : ''}`} />
                   <span>{savedJobIds.includes(selectedJob.id) ? 'Saved' : 'Save'}</span>
                 </Button>
 
@@ -927,8 +1040,27 @@ export default function JobsPage() {
         </div>
       )}
 
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-800 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-300">
+          <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span className="text-xs font-medium">{toastMessage}</span>
+          <button onClick={() => setToastMessage(null)} className="text-slate-400 hover:text-white p-1">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-mono text-xs text-slate-500">Loading catalog...</div>}>
+      <JobsContent />
+    </React.Suspense>
   );
 }

@@ -84,6 +84,9 @@ export default function ProfilePage() {
     try {
       localStorage.setItem('anvesh_profile', JSON.stringify(profile));
       await api.updateProfile(profile);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('anvesh_profile_updated'));
+      }
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
     } catch (e) {
@@ -117,6 +120,9 @@ export default function ProfilePage() {
           u.full_name = updated.fullName;
           u.email = updated.email;
           localStorage.setItem('anvesh_user', JSON.stringify(u));
+        }
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('anvesh_profile_updated'));
         }
       } catch (_) {}
 

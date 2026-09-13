@@ -19,6 +19,7 @@ import {
   AlertTriangle,
   RefreshCw,
 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -27,12 +28,27 @@ import { SkillRadarChart, SkillGapMatrix, SkillPill } from '@/components/SkillGr
 import { api, SkillGapProfile, MOCK_SKILL_GAP_PROFILES } from '@/lib/api';
 import { formatNumber, formatSalary } from '@/lib/utils';
 
-export default function SkillGapPage() {
+function SkillGapContent() {
+  const searchParams = useSearchParams();
   const [selectedRoleId, setSelectedRoleId] = useState<string>('ai-platform-eng');
   const [gapProfile, setGapProfile] = useState<SkillGapProfile>(
     MOCK_SKILL_GAP_PROFILES['ai-platform-eng']
   );
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role');
+    if (roleParam) {
+      if (MOCK_SKILL_GAP_PROFILES[roleParam]) {
+        setSelectedRoleId(roleParam);
+      } else {
+        const found = Object.keys(MOCK_SKILL_GAP_PROFILES).find((k) =>
+          k.toLowerCase().includes(roleParam.toLowerCase()) || roleParam.toLowerCase().includes(k)
+        );
+        if (found) setSelectedRoleId(found);
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     loadRoleGap(selectedRoleId);
@@ -217,7 +233,7 @@ export default function SkillGapPage() {
               </div>
 
               <div className="pt-2">
-                <Link href="/jobs">
+                <Link href={`/jobs?query=${encodeURIComponent(gapProfile.title)}`}>
                   <Button className="w-full bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs gap-2">
                     <Briefcase className="w-4 h-4 text-brand-600" />
                     Browse Matching {gapProfile.title} Roles
@@ -232,7 +248,7 @@ export default function SkillGapPage() {
             <SkillGapMatrix
               missingSkills={gapProfile.missingSkills}
               onStartSkillRoadmap={(skill) => {
-                window.location.href = `/what-if?add=${encodeURIComponent(skill)}`;
+                window.location.href = `/what-if?skills=${encodeURIComponent(skill)}`;
               }}
             />
 
@@ -290,10 +306,10 @@ export default function SkillGapPage() {
                 <p className="text-xs text-slate-500">
                   Ready to test how these skills impact your salary trajectory and unlocked roles?
                 </p>
-                <Link href="/what-if">
+                <Link href={`/what-if?skills=${encodeURIComponent(gapProfile.missingSkills.map((s) => s.skill).join(','))}`}>
                   <Button variant="noise" className="gap-2 text-xs font-bold shrink-0">
                     <TrendingUp className="w-4 h-4" />
-                    Launch What-If Sandbox
+                    Simulate All Missing Skills in What-If
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Button>
                 </Link>
@@ -305,5 +321,13 @@ export default function SkillGapPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function SkillGapPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-mono text-xs text-slate-500">Loading skill gap analyzer...</div>}>
+      <SkillGapContent />
+    </React.Suspense>
   );
 }

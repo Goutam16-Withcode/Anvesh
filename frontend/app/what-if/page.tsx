@@ -33,6 +33,7 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
+import { useSearchParams } from 'next/navigation';
 import { api, WhatIfResult, TrajectoryPoint, LearningStep, Job } from '@/lib/api';
 import { formatNumber } from '@/lib/utils';
 
@@ -106,7 +107,8 @@ const PRESET_STACKS = [
   },
 ];
 
-export default function WhatIfPage() {
+function WhatIfContent() {
+  const searchParams = useSearchParams();
   const [selectedSkills, setSelectedSkills] = useState<string[]>(['Kubernetes', 'Go']);
   const [simulationData, setSimulationData] = useState<WhatIfResult['simulation'] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -116,8 +118,17 @@ export default function WhatIfPage() {
   const [isAgentLoading, setIsAgentLoading] = useState(false);
 
   useEffect(() => {
+    const skillsParam = searchParams.get('skills');
+    if (skillsParam) {
+      const parsed = skillsParam.split(',').map((s) => s.trim()).filter(Boolean);
+      if (parsed.length > 0) {
+        setSelectedSkills(parsed);
+        runSimulation(parsed);
+        return;
+      }
+    }
     runSimulation(selectedSkills);
-  }, []);
+  }, [searchParams]);
 
   const runSimulation = async (skills: string[]) => {
     setIsLoading(true);
@@ -595,9 +606,9 @@ export default function WhatIfPage() {
                       <span className="font-mono text-xs text-slate-700 font-bold">
                         {job.compensation_range}
                       </span>
-                      <Link href="/jobs">
+                      <Link href={`/jobs?query=${encodeURIComponent(job.title)}`}>
                         <Button size="sm" variant="outline" className="text-[11px] h-7 px-2.5">
-                          View in Catalog
+                          View in Catalog &rarr;
                         </Button>
                       </Link>
                     </div>
@@ -650,5 +661,13 @@ export default function WhatIfPage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function WhatIfPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-mono text-xs text-slate-500">Loading simulator...</div>}>
+      <WhatIfContent />
+    </React.Suspense>
   );
 }
