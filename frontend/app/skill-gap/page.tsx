@@ -160,7 +160,7 @@ function SkillGapContent() {
 
                   <div className="text-right shrink-0">
                     <Badge
-                      variant={isSelected ? 'default' : 'outline'}
+                      variant={isSelected ? 'brand' : 'outline'}
                       className="font-mono text-xs"
                     >
                       {percent}% Fit

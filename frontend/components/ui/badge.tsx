@@ -2,12 +2,26 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'brand' | 'emerald' | 'slate' | 'amber' | 'cyan' | 'violet' | 'indigo' | 'outline';
+  variant?:
+    | 'brand'
+    | 'emerald'
+    | 'slate'
+    | 'amber'
+    | 'cyan'
+    | 'violet'
+    | 'indigo'
+    | 'outline'
+    | 'default'
+    | 'secondary'
+    | 'destructive';
 }
 
 export function Badge({ className, variant = 'brand', children, ...props }: BadgeProps) {
-  const variants = {
+  const variants: Record<string, string> = {
     brand: 'bg-brand-50 text-brand-700 border-brand-200/60',
+    default: 'bg-brand-50 text-brand-700 border-brand-200/60',
+    secondary: 'bg-slate-100 text-slate-700 border-slate-200',
+    destructive: 'bg-rose-50 text-rose-700 border-rose-200/60',
     emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
     slate: 'bg-slate-100 text-slate-700 border-slate-200',
     amber: 'bg-amber-50 text-amber-700 border-amber-200/60',
