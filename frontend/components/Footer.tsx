@@ -4,50 +4,27 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Compass,
-  Home,
-  Briefcase,
-  Github,
-  Twitter,
-  Linkedin,
   ArrowRight,
   ShieldCheck,
-  Zap,
-  Database,
-  Cpu,
-  Mail,
   CheckCircle2,
-  Sparkles,
-  Terminal,
-  FileCode2,
+  Mail,
+  ExternalLink,
+  Lock,
+  Code,
+  X,
+  Check,
+  Copy,
   Scale,
   FileText,
   Activity,
-  ExternalLink,
-  Lock,
-  Server,
-  Code,
-  X,
-  Layers,
-  Globe,
-  Check,
-  Copy,
-  AlertCircle,
-  TrendingUp,
-  Route,
-  User,
+  ChevronUp,
 } from 'lucide-react';
-import { Button } from './ui/button';
-import { AceternityInput, BottomGradient } from './ui/signup-form';
-import { TextHoverEffect } from './ui/text-hover-effect';
-import { BackgroundBeams } from './ui/background-beams';
-import { FloatingDock, FloatingDockItem } from './ui/floating-dock';
 import { AnveshBrandLockup } from './ui/anvesh-logo';
 
 type ModalType = 'privacy' | 'gdpr' | 'terms' | 'api' | 'status' | 'security' | null;
 
 export function Footer() {
-  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -63,11 +40,11 @@ export function Footer() {
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newsletterEmail) {
+    if (email) {
       setIsSubscribed(true);
       setTimeout(() => {
         setIsSubscribed(false);
-        setNewsletterEmail('');
+        setEmail('');
       }, 4000);
     }
   };
@@ -88,340 +65,325 @@ export function Footer() {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  return (
-    <footer className="relative bg-slate-950 text-slate-400 pt-20 pb-12 border-t border-slate-800 overflow-hidden">
-      {/* Background Ambient Beams */}
-      <BackgroundBeams />
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
+  return (
+    <footer className="relative bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800/80 font-sans">
+      {/* Subtle Ambient Radial Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         
-        {/* Top Newsletter / Intelligence Digest Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-3xl bg-slate-900/80 border border-slate-800/90 shadow-2xl backdrop-blur-md">
-          <div className="lg:col-span-7 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-semibold text-brand-300">
-              <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-              <span>Career Intelligence Digest</span>
-            </div>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Monthly deterministic skill & salary intelligence.
+        {/* =========================================================================
+            TOP SECTION: SLEEK NEWSLETTER CARD (Clean Real-World SaaS Design)
+            ========================================================================= */}
+        <div className="rounded-2xl p-6 sm:p-8 bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="space-y-1.5 max-w-xl">
+            <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+              Subscribe to the ANVESH Engineering Dispatch
             </h3>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-xl">
-              Receive verified industry compensation curves, emerging ontology node additions, and vector retrieval research papers directly in your inbox.
+            <p className="text-sm text-slate-400 leading-relaxed">
+              Bi-weekly analysis on engineering compensation curves, emerging skill graph nodes, and vector retrieval benchmarks.
             </p>
           </div>
 
-          <div className="lg:col-span-5">
+          <div className="w-full lg:w-auto lg:min-w-[420px]">
             {isSubscribed ? (
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-semibold flex items-center gap-2.5 animate-fadeIn">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                <span>Subscribed! You will receive our next quarterly benchmark digest.</span>
+              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-medium">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Thank you! Check your inbox for our latest benchmark report.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubscribe} className="space-y-3">
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <AceternityInput
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
+                  <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
                     type="email"
-                    placeholder="engineer@company.com"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="Enter your work email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-slate-800/90 border-slate-700 text-white placeholder:text-slate-500"
+                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-800/90 border border-slate-700 text-white placeholder:text-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
                   />
-                  <div className="relative group/btn shrink-0">
-                    <Button type="submit" variant="noise" size="md" className="w-full sm:w-auto font-bold">
-                      <span>Subscribe</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </Button>
-                    <BottomGradient />
-                  </div>
                 </div>
-                <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span>Zero marketing spam. Strict privacy. Unsubscribe in one click.</span>
-                </p>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm"
+                >
+                  <span>Subscribe</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </form>
             )}
           </div>
         </div>
 
-        {/* 4-Column Grid with EXCLUSIVE Footer Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        {/* =========================================================================
+            MAIN NAVIGATION: 4 CLEAN REAL-WORLD COLUMNS (Stripe / Vercel Architecture)
+            ========================================================================= */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-10 pt-4">
           
-          {/* Column 1: ANVESH Identity & System Verification */}
-          <div className="space-y-4">
-            <Link href="/" className="focus:outline-none inline-block">
+          {/* Column 1: Brand & Status (Occupies 2 columns on lg) */}
+          <div className="col-span-2 space-y-4">
+            <Link href="/" className="inline-block focus:outline-none">
               <AnveshBrandLockup size="md" isDarkBackground={true} />
             </Link>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
-              <strong className="text-slate-300 font-semibold">अन्वेष (Anvesh)</strong> is Sanskrit for <em className="text-brand-300">systematic inquiry & exploratory discovery</em>. Built to replace subjective hiring biases with mathematical ranking and candidate sovereignty.
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
+              The open-core intelligence platform for engineering career navigation, deterministic vector skill matching, and counterfactual simulation.
             </p>
 
-            <div className="pt-3 flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-[11px] font-mono text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Zero-PII Ephemeral
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-[11px] font-mono text-brand-300">
-                MIT Open-Core
-              </span>
+            {/* Live Operational Status Badge */}
+            <div className="pt-1">
+              <button
+                onClick={() => setActiveModal('status')}
+                className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors text-left"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-xs font-medium text-slate-300">
+                  All Systems Operational
+                </span>
+                <span className="text-[11px] font-mono text-slate-500">
+                  &bull; 99.99%
+                </span>
+              </button>
+            </div>
+
+            {/* Social Channels */}
+            <div className="flex items-center gap-3 pt-2 text-slate-400">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+                className="p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                </svg>
+              </a>
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="X / Twitter"
+                className="p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn"
+                className="p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 1.63 1.64c0-.9-.73-1.64-1.63-1.64z" />
+                </svg>
+              </a>
             </div>
           </div>
 
-          {/* Column 2: Legal, Governance & Candidate Rights */}
-          <div className="space-y-3.5 text-sm">
-            <h4 className="font-bold text-white uppercase tracking-wider text-xs flex items-center gap-1.5">
-              <Scale className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Legal & Rights</span>
+          {/* Column 2: Product */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              Product
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <ul className="space-y-2 text-sm">
               <li>
-                <button
-                  onClick={() => setActiveModal('privacy')}
-                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left group"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 group-hover:bg-emerald-400" />
-                  <span>Zero-PII Data Retention Policy</span>
-                </button>
+                <Link href="/jobs" className="hover:text-white transition-colors">
+                  Jobs Catalog
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => setActiveModal('gdpr')}
-                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left group"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 group-hover:bg-emerald-400" />
-                  <span>GDPR Art. 22 Explainability Rights</span>
-                </button>
+                <Link href="/skill-gap" className="hover:text-white transition-colors">
+                  Skill Gap Analyzer
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => setActiveModal('terms')}
-                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left group"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 group-hover:bg-emerald-400" />
-                  <span>MIT Open-Core & Terms of Service</span>
-                </button>
+                <Link href="/what-if" className="hover:text-white transition-colors">
+                  What-If Simulator
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => setActiveModal('security')}
-                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left group"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 group-hover:bg-emerald-400" />
-                  <span>Responsible Vulnerability Disclosure</span>
-                </button>
+                <Link href="/career-path" className="hover:text-white transition-colors">
+                  Career Trajectories
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard" className="hover:text-white transition-colors">
+                  Career Copilot
+                </Link>
+              </li>
+              <li>
+                <Link href="/profile" className="hover:text-white transition-colors">
+                  Profile &amp; Resume
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Developer & API Ecosystem */}
-          <div className="space-y-3.5 text-sm">
-            <h4 className="font-bold text-white uppercase tracking-wider text-xs flex items-center gap-1.5">
-              <Code className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Developer API</span>
+          {/* Column 3: Resources & Developers */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              Developers
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <ul className="space-y-2 text-sm">
               <li>
                 <button
                   onClick={() => setActiveModal('api')}
-                  className="hover:text-cyan-300 transition-colors flex items-center gap-1.5 text-left group"
+                  className="hover:text-white transition-colors text-left"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 group-hover:bg-cyan-400" />
-                  <span>REST & OpenAPI 3.1 Specification</span>
+                  REST API &amp; cURL
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => setActiveModal('api')}
-                  className="hover:text-cyan-300 transition-colors flex items-center gap-1.5 text-left group"
+                  className="hover:text-white transition-colors text-left"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 group-hover:bg-cyan-400" />
-                  <span>Submodular MMR Diversity SDK</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveModal('api')}
-                  className="hover:text-cyan-300 transition-colors flex items-center gap-1.5 text-left group"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 group-hover:bg-cyan-400" />
-                  <span>Self-Hosted Docker & Helm Charts</span>
+                  OpenAPI 3.1 Spec
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => setActiveModal('status')}
-                  className="hover:text-cyan-300 transition-colors flex items-center gap-1.5 text-left group"
+                  className="hover:text-white transition-colors text-left"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 group-hover:bg-cyan-400" />
-                  <span>Model Checkpoint Registry (bge-v1.5)</span>
+                  System Status
+                </button>
+              </li>
+              <li>
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white transition-colors inline-flex items-center gap-1"
+                >
+                  <span>Open-Core Repo</span>
+                  <ExternalLink className="w-3 h-3 text-slate-500" />
+                </a>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveModal('security')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Security &amp; PGP
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Live Infrastructure & Operational Status */}
-          <div className="space-y-3.5 text-sm">
-            <h4 className="font-bold text-white uppercase tracking-wider text-xs flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-brand-400" />
-              <span>System Telemetry</span>
+          {/* Column 4: Trust & Legal */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              Legal &amp; Trust
             </h4>
-            
-            <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Global Vector Nodes
-                </span>
-                <span className="font-mono text-emerald-400 text-[11px] font-semibold">99.99% Uptime</span>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono border-t border-slate-800/80 pt-2 text-slate-400">
-                <span>Inference Latency</span>
-                <span className="text-brand-300">24.6ms avg</span>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono border-t border-slate-800/80 pt-2 text-slate-400">
-                <span>Active Embeddings</span>
-                <span className="text-slate-300">104,850 live</span>
-              </div>
-
-              <button
-                onClick={() => setActiveModal('status')}
-                className="w-full mt-1 pt-1 text-center text-[11px] font-semibold text-brand-400 hover:text-brand-300 transition-colors flex items-center justify-center gap-1"
-              >
-                <span>Inspect Cluster Health</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            </div>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <button
+                  onClick={() => setActiveModal('privacy')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveModal('gdpr')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  GDPR Article 22
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveModal('terms')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Terms of Service
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveModal('privacy')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Zero-PII Guarantee
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveModal('security')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Responsible Disclosure
+                </button>
+              </li>
+            </ul>
           </div>
 
         </div>
 
-        {/* Aceternity UI Floating Dock (Centered & Minimalist) */}
-        <div className="pt-8 pb-4 flex items-center justify-center border-t border-slate-800/80">
-          <FloatingDock
-            items={[
-              {
-                title: 'Home',
-                icon: <Home className="w-full h-full text-slate-200" />,
-                href: '/',
-              },
-              {
-                title: 'Jobs Catalog',
-                icon: <Briefcase className="w-full h-full text-brand-400" />,
-                href: '/jobs',
-              },
-              {
-                title: 'What-If Engine',
-                icon: <TrendingUp className="w-full h-full text-emerald-400" />,
-                href: '/what-if',
-              },
-              {
-                title: 'Skill Gap',
-                icon: <Layers className="w-full h-full text-indigo-400" />,
-                href: '/skill-gap',
-              },
-              {
-                title: 'Career Path',
-                icon: <Route className="w-full h-full text-cyan-400" />,
-                href: '/career-path',
-              },
-              {
-                title: 'Profile',
-                icon: <User className="w-full h-full text-slate-300" />,
-                href: '/profile',
-              },
-              {
-                title: 'AI Agent',
-                icon: <Terminal className="w-full h-full text-amber-400" />,
-                href: '/dashboard',
-              },
-              {
-                title: 'Security PGP',
-                icon: <ShieldCheck className="w-full h-full text-rose-400" />,
-                href: '#',
-                onClick: () => setActiveModal('security'),
-              },
-              {
-                title: 'LinkedIn',
-                icon: (
-                  <svg className="w-full h-full text-blue-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 1.63 1.64c0-.9-.73-1.64-1.63-1.64z" />
-                  </svg>
-                ),
-                href: 'https://linkedin.com',
-              },
-              {
-                title: 'Instagram',
-                icon: (
-                  <svg className="w-full h-full text-pink-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                  ),
-                  href: 'https://instagram.com',
-                },
-                {
-                  title: 'Twitter / X',
-                  icon: (
-                    <svg className="w-full h-full text-sky-400" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                  ),
-                  href: 'https://twitter.com',
-                },
-              ]}
-            desktopClassName="bg-slate-900/90 border-slate-800 shadow-2xl px-3.5 py-2 h-13"
-          />
-        </div>
-
-        {/* Interactive Aceternity TextHoverEffect Banner */}
-        <div className="pt-6 border-t border-slate-800/80">
-          <div className="h-28 sm:h-36 w-full flex items-center justify-center overflow-hidden">
-            <TextHoverEffect text="ANVESH" />
-          </div>
-          <p className="text-center text-xs text-slate-500 font-mono -mt-2">
-            Deterministic Career Discovery &bull; अन्वेष &bull; Open-Core Intelligence
-          </p>
-        </div>
-
-        {/* Bottom Bar: Copyright & Exclusive Quick Triggers */}
+        {/* =========================================================================
+            BOTTOM BAR: COPYRIGHT & ESSENTIAL QUICK LINKS
+            ========================================================================= */}
         <div className="pt-8 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>
-            &copy; {new Date().getFullYear()} ANVESH Open-Core Platform. Algorithms licensed under MIT / Apache-2.0.
+            &copy; {new Date().getFullYear()} ANVESH Technologies, Inc. Licensed under MIT &amp; Apache-2.0.
           </p>
-          <div className="flex items-center gap-5 text-xs">
+
+          <div className="flex items-center gap-5">
             <button
               onClick={() => setActiveModal('privacy')}
               className="hover:text-slate-300 transition-colors"
             >
-              Zero-PII Policy
+              Privacy
             </button>
             <button
-              onClick={() => setActiveModal('gdpr')}
+              onClick={() => setActiveModal('terms')}
               className="hover:text-slate-300 transition-colors"
             >
-              GDPR Art. 22
+              Terms
             </button>
             <button
-              onClick={() => setActiveModal('api')}
+              onClick={() => setActiveModal('security')}
               className="hover:text-slate-300 transition-colors"
             >
-              API Spec
+              Security
             </button>
             <button
               onClick={() => setActiveModal('status')}
-              className="hover:text-slate-300 transition-colors flex items-center gap-1.5"
+              className="hover:text-slate-300 transition-colors"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span>Status (Operational)</span>
+              Status
+            </button>
+
+            {/* Back to Top Button */}
+            <button
+              onClick={scrollToTop}
+              title="Back to top"
+              className="p-1 rounded-md bg-slate-900 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors ml-2"
+            >
+              <ChevronUp className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
       </div>
 
-      {/* Interactive Information Modals (Exclusive Footer Documentation) */}
+      {/* =========================================================================
+          ENTERPRISE MODALS (Clean, Accessible, High-Contrast Documentation)
+          ========================================================================= */}
       <AnimatePresence>
         {activeModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
@@ -434,16 +396,16 @@ export function Footer() {
             />
             
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden z-10 max-h-[85vh] flex flex-col"
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+              className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-10 max-h-[85vh] flex flex-col"
             >
               {/* Modal Header */}
-              <div className="p-6 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur-sm">
+              <div className="p-5 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
+                  <div className="p-2 rounded-lg bg-brand-500/10 border border-brand-500/20 text-brand-400">
                     {activeModal === 'privacy' && <ShieldCheck className="w-5 h-5 text-emerald-400" />}
                     {activeModal === 'gdpr' && <Scale className="w-5 h-5 text-emerald-400" />}
                     {activeModal === 'terms' && <FileText className="w-5 h-5 text-indigo-400" />}
@@ -452,10 +414,10 @@ export function Footer() {
                     {activeModal === 'security' && <Lock className="w-5 h-5 text-amber-400" />}
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">
+                    <h3 className="text-base font-bold text-white">
                       {activeModal === 'privacy' && 'Zero-PII Ephemeral Data Retention Policy'}
                       {activeModal === 'gdpr' && 'GDPR Article 22 & Algorithmic Recourse'}
-                      {activeModal === 'terms' && 'MIT License & Open-Core Governance'}
+                      {activeModal === 'terms' && 'MIT License & Terms of Service'}
                       {activeModal === 'api' && 'REST & OpenAPI 3.1 Developer Spec'}
                       {activeModal === 'status' && 'Live Infrastructure & Cluster Health'}
                       {activeModal === 'security' && 'Responsible Vulnerability Disclosure & PGP'}
@@ -467,28 +429,29 @@ export function Footer() {
                 </div>
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Modal Body */}
               <div className="p-6 overflow-y-auto space-y-4 text-sm text-slate-300 leading-relaxed">
                 
+                {/* 1. Privacy Policy */}
                 {activeModal === 'privacy' && (
                   <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-start gap-2.5">
+                    <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-start gap-2.5">
                       <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
-                      <span><strong>Permanent Guarantee:</strong> Your raw resume text is never retained on disk. All personal identifiers (name, phone, address) are expunged during in-memory tokenization.</span>
+                      <span><strong>Permanent Guarantee:</strong> Your raw resume text is never retained on disk. All personal identifiers (name, phone, address) are sanitized in memory buffers during AST tokenization.</span>
                     </div>
 
                     <h4 className="font-bold text-white text-sm">1. Ephemeral In-Memory Extraction</h4>
                     <p className="text-xs text-slate-400">
-                      When a resume is submitted, it is loaded into an isolated RAM-backed micro-worker. Dense vector embeddings (384-d) and ontology skill IDs are extracted, and the original file is wiped from memory buffers within 60 seconds.
+                      When a resume is submitted, it is parsed within an isolated RAM-backed micro-worker. Dense vector embeddings (384-d) and ontology skill IDs are extracted, and the original file is expunged from memory within 60 seconds.
                     </p>
 
-                    <h4 className="font-bold text-white text-sm">2. Non-Invertible Mathematical Projections</h4>
+                    <h4 className="font-bold text-white text-sm">2. Non-Invertible Mathematical Coordinates</h4>
                     <p className="text-xs text-slate-400">
                       Vector embeddings stored in our Qdrant cluster represent mathematical coordinates in skill latent space. They are mathematically non-invertible—it is physically impossible to reverse-engineer phone numbers, names, or addresses from vector coordinates.
                     </p>
@@ -500,9 +463,10 @@ export function Footer() {
                   </div>
                 )}
 
+                {/* 2. GDPR Art. 22 */}
                 {activeModal === 'gdpr' && (
                   <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs flex items-start gap-2.5">
+                    <div className="p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs flex items-start gap-2.5">
                       <Scale className="w-4 h-4 shrink-0 mt-0.5 text-indigo-400" />
                       <span><strong>Article 22 Compliance:</strong> Candidates have the fundamental right not to be subjected to arbitrary, non-transparent automated decisions without mathematical explanation.</span>
                     </div>
@@ -514,7 +478,7 @@ export function Footer() {
 
                     <h4 className="font-bold text-white text-sm">2. Transparent Parameter Control</h4>
                     <p className="text-xs text-slate-400">
-                      Candidates retain full autonomy to tune the trade-off hyperparameters: Semantic Relevance ($\alpha$), Skill Gap Coverage ($\beta$), and MMR Diversity ($\lambda$). No black-box hidden penalties are applied.
+                      Candidates retain full autonomy to tune the trade-off hyperparameters: Semantic Relevance (&alpha;), Skill Gap Coverage (&beta;), and MMR Diversity (&lambda;). No black-box hidden penalties are applied.
                     </p>
 
                     <h4 className="font-bold text-white text-sm">3. Zero Automated Disqualification</h4>
@@ -524,9 +488,10 @@ export function Footer() {
                   </div>
                 )}
 
+                {/* 3. MIT License */}
                 {activeModal === 'terms' && (
                   <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-slate-300 text-xs">
+                    <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 text-xs">
                       <strong>MIT Open-Source License</strong> &bull; Copyright &copy; {new Date().getFullYear()} ANVESH Open-Core Contributors.
                     </div>
 
@@ -534,13 +499,14 @@ export function Footer() {
                       Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated mathematical formulations, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies...
                     </p>
 
-                    <h4 className="font-bold text-white text-sm">Commercial Integrations & API Quotas</h4>
+                    <h4 className="font-bold text-white text-sm">Commercial Integrations &amp; API Quotas</h4>
                     <p className="text-xs text-slate-400">
                       Individual career explorers enjoy unrestricted free access. Enterprise ATS integrations utilizing bulk real-time scoring endpoints are subject to standard rate-limiting (100 req/sec) and uptime SLAs.
                     </p>
                   </div>
                 )}
 
+                {/* 4. API Specification */}
                 {activeModal === 'api' && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -554,7 +520,7 @@ export function Footer() {
                       </button>
                     </div>
 
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+                    <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
                       <pre className="text-cyan-300">curl -X POST https://api.anvesh.ai/v1/recommend/hybrid \</pre>
                       <pre className="text-slate-400">  -H &quot;Authorization: Bearer anvesh_live_k8s_904a8f&quot; \</pre>
                       <pre className="text-slate-400">  -H &quot;Content-Type: application/json&quot; \</pre>
@@ -579,60 +545,50 @@ export function Footer() {
                   </div>
                 )}
 
+                {/* 5. Live Infrastructure Status */}
                 {activeModal === 'status' && (
                   <div className="space-y-4">
-                    <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center justify-between font-semibold">
+                    <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center justify-between font-semibold">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         All Production Systems Operational
                       </span>
                       <span className="font-mono">99.992% (30d)</span>
                     </div>
 
                     <div className="space-y-2 text-xs">
-                      <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Database className="w-4 h-4 text-emerald-400" />
-                          <span className="text-white font-medium">Qdrant Vector Cluster (us-east-1)</span>
-                        </div>
+                      <div className="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
+                        <span className="text-white font-medium">Qdrant Vector Cluster (us-east-1)</span>
                         <span className="font-mono text-emerald-400">12ms &bull; Healthy</span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Cpu className="w-4 h-4 text-emerald-400" />
-                          <span className="text-white font-medium">LightGBM Ranking Microservice</span>
-                        </div>
+                      <div className="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
+                        <span className="text-white font-medium">LightGBM Ranking Microservice</span>
                         <span className="font-mono text-emerald-400">28ms &bull; Healthy</span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Layers className="w-4 h-4 text-emerald-400" />
-                          <span className="text-white font-medium">Canonical Skill Graph (PostgreSQL)</span>
-                        </div>
+                      <div className="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
+                        <span className="text-white font-medium">Canonical Skill Graph (PostgreSQL)</span>
                         <span className="font-mono text-emerald-400">4ms &bull; Healthy</span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Globe className="w-4 h-4 text-emerald-400" />
-                          <span className="text-white font-medium">Global Edge API Gateway</span>
-                        </div>
+                      <div className="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/70 flex items-center justify-between">
+                        <span className="text-white font-medium">Global Edge API Gateway</span>
                         <span className="font-mono text-emerald-400">100% Operational</span>
                       </div>
                     </div>
                   </div>
                 )}
 
+                {/* 6. Security & PGP */}
                 {activeModal === 'security' && (
                   <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-start gap-2.5">
+                    <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-start gap-2.5">
                       <Lock className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
                       <span><strong>Responsible Disclosure:</strong> We actively welcome security researchers. Contact our team directly for vulnerability submissions with guaranteed 24h triage.</span>
                     </div>
 
-                    <h4 className="font-bold text-white text-sm">Security Contact & Bug Bounty</h4>
+                    <h4 className="font-bold text-white text-sm">Security Contact &amp; Bug Bounty</h4>
                     <p className="text-xs text-slate-400">
                       Direct inquiries to <span className="text-brand-300 font-mono">security@anvesh.ai</span>. Submissions are eligible for recognition and bounty compensation based on severity.
                     </p>
@@ -653,14 +609,12 @@ export function Footer() {
 
               {/* Modal Footer */}
               <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-end">
-                <Button
-                  variant="outline"
-                  size="sm"
+                <button
                   onClick={() => setActiveModal(null)}
-                  className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                  className="px-4 py-1.5 rounded-lg border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
                 >
-                  Close (Esc)
-                </Button>
+                  Close
+                </button>
               </div>
             </motion.div>
           </div>
@@ -669,4 +623,3 @@ export function Footer() {
     </footer>
   );
 }
-
