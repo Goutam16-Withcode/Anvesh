@@ -209,6 +209,15 @@ sequenceDiagram
     Agent-->>User: Synthesizes personalized roadmap with verified job opportunities
 ```
 
+### 6. ⚡ Real-Time Latent Signal & Notification Engine
+- **Deterministic Career Telemetry**: Continuously evaluates candidate latent vectors against real-time market shifts, turning notifications from generic spam into **high-leverage career arbitrage signals**:
+  - **Vector Trajectory Surge**: Triggered when an opening's 384-d latent embedding reaches cosine similarity $\ge 0.90$ with zero critical skill gaps.
+  - **Salary Delta Arbitrage**: Detects when acquiring 1 specific missing competency (e.g., *Triton Inference* or *vLLM*) unlocks an immediate projected $+\$35,000-\$45,000/\text{yr}$ market lift across tier-1 employers.
+  - **Graph Shortest-Path Shortcut**: Discovers emerging bridge roles that cut 2+ years off the candidate's shortest path to Principal or Director levels.
+  - **Skill Scarcity Spike**: Real-time market demand surges for the candidate's verified core proficiencies.
+- **Authentication Lifecycle Telemetry**: Real-time session synchronization on login, candidate vector space initialization on signup, and verified Zero-PII memory buffer purging on logout.
+- **Synthesized Web Audio & Floating Toasts**: Native dual-frequency tactile audio cues (no external audio assets) coupled with ambient dark-glass floating toasts and an interactive header notification center.
+
 ---
 
 ## 🗂️ Complete Monorepo Folder Structure
